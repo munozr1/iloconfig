@@ -1,0 +1,29 @@
+{
+  "name": "iloconfig",
+  "version": "1.0.0",
+  "description": "Configure HPE servers with ILO5",
+  "main": "main.js",
+  "scripts": {
+    "test": "testilo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/munozr1/iloconfig.git"
+  },
+  "keywords": [
+    "hpe",
+    "ilo",
+    "configure",
+    "api"
+  ],
+  "author": "Rodrigo Munoz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/munozr1/iloconfig/issues"
+  },
+  "homepage": "https://github.com/munozr1/iloconfig#readme",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "ilorest": "^1.0.2"
+  }
+}
