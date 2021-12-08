@@ -24,7 +24,6 @@
 	"homepage": "https://github.com/munozr1/iloconfig#readme",
 	"dependencies": {
 		"axios": "^0.24.0",
-		"ilorest": "^1.0.2",
 		"yargs": "^17.3.0"
 	},
 	"bin": {
