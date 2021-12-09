@@ -10,7 +10,8 @@ class SInstance {
 		newPassword,
 		headers,
 		ip,
-		url_prefix
+		url_prefix,
+		actions
 	) {
 		this.adminUsername = adminUsername;
 		this.adminPassword = adminPassword;
@@ -20,10 +21,9 @@ class SInstance {
 		this.newPassword = newPassword;
 		this.ip = ip;
 		this.headers = headers;
+		this.actions = actions;
 	}
-	agent = new https.Agent({
-		rejectUnauthorized: false,
-	});
+
 	config = {
 		httpsAgent: this.agent,
 		"Content-Type": "application/json",
