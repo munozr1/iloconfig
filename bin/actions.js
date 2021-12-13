@@ -4,7 +4,7 @@ const fs = require("fs");
 const agent = new https.Agent({
 	rejectUnauthorized: false,
 });
-
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 /**
  *
  * @param {string} ip -> ip address of the server
@@ -15,19 +15,26 @@ const agent = new https.Agent({
  *          - location : the location url to logout
  */
 async function login(ip, username, password) {
-	return await axios.post(
-		`${ip}/redfish/v1/SessionsService/Sessions/`,
-		{
-			UserName: username,
-			Password: password,
-		},
-		{
-			headers: {
-				"Content-Type": "application/json",
-				httpsAgent: agent,
+	return await axios
+		.post(
+			`https://${ip}/redfish/v1/SessionsService/Sessions/`,
+			{
+				UserName: username,
+				Password: password,
 			},
-		}
-	);
+			{
+				headers: {
+					"Content-Type": "application/json",
+					httpsAgent: agent,
+				},
+			}
+		)
+		.then((resp) => {
+			console.log("RESP", resp);
+		})
+		.catch((err) => {
+			console.log("ERROR HAPPENED", err);
+		});
 }
 
 /**
@@ -92,7 +99,7 @@ async function setLicense(ip, license, jwt) {
 async function changeDHCP(ip, status, jwt) {
 	return await axios
 		.patch(
-			`${ip}/redfish/v1/Oem/Hp/DHCPv4/Enabled`,
+			`${ip}/redfish/v1/managers/1/ethernetinterfaces/1/`,
 			{
 				Oem: {
 					Hp: {
@@ -119,7 +126,7 @@ async function changeDHCP(ip, status, jwt) {
 async function changeHostname(ip, hostname, jwt) {
 	return await axios
 		.post(
-			`${ip}rest/v1/Managers/1/EthernetInterfaces/`,
+			`${ip}/redfish/v1/Managers/1/EthernetInterfaces/1/`,
 			{
 				Oem: {
 					Hp: {
@@ -163,7 +170,7 @@ async function changeIp(ip, username, password, role, jwt) {
 /**
  *
  * @param {string} filename The name or path of the file to parse
- * @param {boolean} h Whether or not the files first line is a header
+ 
  * @returns {Array} An array of objects representing the data in the file
  * @example 
  * input:   
@@ -189,16 +196,13 @@ DATA [
 
   ]
  */
-function parseCSV(filename, h = true) {
+function parseCSV(filename) {
 	fs.readFile(filename, "utf8", function (err, data) {
 		if (err) {
 			return console.log(err);
 		}
 		var lines = data.split("\n");
-		var headers;
-		if (h) {
-			headers = lines[0].split(",");
-		}
+		var headers = lines[0].split(",");
 		var result = [];
 		for (var i = 0; i < lines.length; i++) {
 			var obj = {};
@@ -218,3 +222,6 @@ function parseCSV(filename, h = true) {
 		return result;
 	});
 }
+module.exports = {
+	login,
+};
