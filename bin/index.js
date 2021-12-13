@@ -42,7 +42,8 @@ if (yargs.argv.d == true || yargs.argv.default == true) {
 // iterate through the argv array in a for loop. Use a switch to determine which flag was passed in.
 // if the flag is -f, then parse the file and pass the data to the function, increase the counter by 1 to move onto the next flag in the array.
 // if the flag is -d, then call the defaultConfig function.
-
+// https://github.com/HewlettPackard/javascript-ilorest-library/blob/master/examples/Redfish/ex48_set_ilo_hostname.js
+// this link has js code that can help figure out the uri's for the rest of the functions
 switch (yargs.argv[0]) {
 	case "f":
 		data = actions.parseFile(yargs.argv[1]);
