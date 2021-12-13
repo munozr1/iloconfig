@@ -1,9 +1,7 @@
 #! /usr/bin/env node
-const SInstance = require("./server.js");
 const yargs = require("yargs");
-const utils = require("./utils.js");
 const actions = require("./actions.js");
-
+let obj = new Object();
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
 const usage = "usage: ilo <-f> <file>";
@@ -26,18 +24,31 @@ const options = yargs
 	.help(true).argv;
 //parse arguments passed in
 
-let admin_password;
-let admin_username;
-let hostname;
-let newUsername;
-let newPassword;
-
-let ip;
-let url_prefix;
-let headers = {};
-let location;
-let auth;
-
-if (yargs.argv.t == true || yargs.argv.tv2 == true) {
+let data = actions.parseFile(filename);
+function defaultConfig() {
 	actions.login();
+	actions.changeIp();
+	actions.createUser();
+	actions.dhcpOff();
+	actions.changeHostname();
+	actions.setLicense();
+	actions.logout();
+}
+
+if (yargs.argv.d == true || yargs.argv.default == true) {
+	actions.login();
+}
+
+// iterate through the argv array in a for loop. Use a switch to determine which flag was passed in.
+// if the flag is -f, then parse the file and pass the data to the function, increase the counter by 1 to move onto the next flag in the array.
+// if the flag is -d, then call the defaultConfig function.
+
+switch (yargs.argv[0]) {
+	case "f":
+		data = actions.parseFile(yargs.argv[1]);
+		break;
+
+	default:
+		console.log("Invalid argument");
+		break;
 }
