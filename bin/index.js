@@ -35,7 +35,9 @@ let auth;
 // }
 
 if (yargs.argv.d == true || yargs.argv.default == true) {
-	actions.login("192.168.3.125", "Administrator", "NP26K567");
+	 actions.createSession("192.168.3.125", "Administrator", "NP26K567", (token) => {
+		 console.log(`[ x-auth-token ] `.green.bold, `${token}`.bold);
+	 });
 	// actions.login("192.168.3.179", "administrator", "HKXDQ6G6");
 	// actions.testConnection("192.168.3.125");
 	// console.log("AUTH: ", auth);

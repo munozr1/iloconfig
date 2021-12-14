@@ -23,6 +23,32 @@ async function testConnection(ip) {
 			console.log("ERROR".bgRed.white, `${err.toString()}`.red);
 		});
 }
+async function createSession(ip, u, p, next) {
+	const axios = require('axios');
+	const data = JSON.stringify({
+		"UserName": u,
+		"Password": p
+	});
+
+	const config = {
+		method: 'post',
+		url: `https://${ip}/redfish/v1/SessionService/Sessions/`,
+		headers: {
+			'Content-Type': 'application/json',
+			httpsAgent: agent,
+		},
+		data: data
+	};
+
+	return axios(config)
+		.then(response => {
+			console.log('')
+			console.log(`[ Session Created ] `.green.bold, response.data)
+			next(response.headers['x-auth-token'])
+		})
+		.catch(error => console.log("ERROR".bgRed.white, `${err.toString()}`.red));
+
+}
 /**
  *
  * @param {string} ip -> ip address of the server
@@ -246,4 +272,5 @@ function parseCSV(filename) {
 module.exports = {
 	login,
 	testConnection,
+	createSession
 };
