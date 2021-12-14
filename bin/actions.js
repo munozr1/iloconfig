@@ -2,6 +2,7 @@ const https = require("https");
 const axios = require("axios").default;
 const fs = require("fs");
 const color = require("colors");
+const utils = require("./utils");
 const agent = new https.Agent({
 	rejectUnauthorized: false,
 });
@@ -23,6 +24,16 @@ async function testConnection(ip) {
 			console.log("ERROR".bgRed.white, `${err.toString()}`.red);
 		});
 }
+
+/**
+ * 
+ * @param {*} ip 
+ * @param {*} u 
+ * @param {*} p 
+ * @param {*} next (returns a token to be used in other session based requests)
+ * @link https: //hewlettpackard.github.io/iLOAmpPack-Redfish-API-Docs/#authentication-and-sessions
+ * @returns 
+ */
 async function createSession(ip, u, p, next) {
 	const axios = require('axios');
 	const data = JSON.stringify({
@@ -44,11 +55,41 @@ async function createSession(ip, u, p, next) {
 		.then(response => {
 			console.log('')
 			console.log(`[ Session Created ] `.green.bold, response.data)
-			next(response.headers['x-auth-token'])
+			next({
+				token: response.headers['x-auth-token'],
+				baseUrl: `https://${ip}/redfish/v1`,
+				basic: utils.authHeader(u, p)
+			})
 		})
-		.catch(error => console.log("ERROR".bgRed.white, `${err.toString()}`.red));
+		.catch(error => console.log("ERROR".bgRed.white, `${error.toString()}`.red));
 
 }
+
+
+async function createUser(auth, createUserPayload) {
+	const data = JSON.stringify(createUserPayload);
+
+	const config = {
+		method: 'get',
+		url: `${auth.baseUrl}/AccountService/Accounts`,
+		headers: {
+			'Content-Type': 'application/json',
+			// 'Authorization': auth.basic
+			"x-auth-token": auth.token,
+		},
+		data: data
+	};
+
+	axios(config)
+		.then(function (response) {
+			console.log(JSON.stringify(response.data));
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+
+}
+
 /**
  *
  * @param {string} ip -> ip address of the server
@@ -93,7 +134,7 @@ async function login(ip, username, password) {
  * @param {string} jwt
  * @returns returns whether the user was created or not
  */
-async function createUser(ip, username, password, role, jwt) {
+async function createUser_old(ip, username, password, role, jwt) {
 	return await axios
 		.post(
 			`${ip}/redfish/v1/Accounts/`,
@@ -272,5 +313,6 @@ function parseCSV(filename) {
 module.exports = {
 	login,
 	testConnection,
-	createSession
+	createSession,
+	createUser
 };

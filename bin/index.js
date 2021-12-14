@@ -35,8 +35,21 @@ let auth;
 // }
 
 if (yargs.argv.d == true || yargs.argv.default == true) {
-	 actions.createSession("192.168.3.125", "Administrator", "NP26K567", (token) => {
-		 console.log(`[ x-auth-token ] `.green.bold, `${token}`.bold);
+	 actions.createSession("192.168.3.125", "Administrator", "NP26K567", (auth) => {
+		 console.log(`[ x-auth-token ] `.green.bold, `${auth.token}`.bold);
+		 actions.createUser(auth, {
+		 	"UserName": "33omarTestUserName",
+		 	"Password": "superSecure",
+		 	// "Oem": {
+		 	// 	"Hpe": {
+		 	// 		"Enabled": true,
+		 	// 		"DisplayName": "omarTestDisplayName",
+		 	// 		"Privilege": "{privilege}"
+		 	// 	}
+		 	// }
+		 })
+	 }).catch(er => {
+		 console.log('ERRRRRR', er)
 	 });
 	// actions.login("192.168.3.179", "administrator", "HKXDQ6G6");
 	// actions.testConnection("192.168.3.125");
