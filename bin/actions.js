@@ -1,10 +1,28 @@
 const https = require("https");
 const axios = require("axios").default;
 const fs = require("fs");
+const color = require("colors");
 const agent = new https.Agent({
 	rejectUnauthorized: false,
 });
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
+// process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
+
+async function testConnection(ip) {
+	return await axios
+		.get(`https://${ip}/redfish/v1/`, {
+			headers: {
+				"Content-Type": "application/json",
+				httpsAgent: agent,
+			},
+		})
+		.then((resp) => {
+			console.log("RESP", resp.data);
+		})
+		.catch((err) => {
+			// console.log("ERROR HAPPENED", err);
+			console.log("ERROR".bgRed.white, `${err.toString()}`.red);
+		});
+}
 /**
  *
  * @param {string} ip -> ip address of the server
@@ -15,12 +33,14 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
  *          - location : the location url to logout
  */
 async function login(ip, username, password) {
+	console.log("logon creds", { ip, username, password });
 	return await axios
 		.post(
 			`https://${ip}/redfish/v1/SessionsService/Sessions/`,
+			// `https://${ip}/redfish/v1/Sessions/`,
 			{
-				UserName: username,
-				Password: password,
+				Password: username,
+				UserName: password,
 			},
 			{
 				headers: {
@@ -33,7 +53,8 @@ async function login(ip, username, password) {
 			console.log("RESP", resp);
 		})
 		.catch((err) => {
-			console.log("ERROR HAPPENED", err);
+			console.log(JSON.stringify(err.response.data));
+			console.log("ERROR".bgRed.white, `${err.toString()}`.red);
 		});
 }
 
@@ -224,4 +245,5 @@ function parseCSV(filename) {
 }
 module.exports = {
 	login,
+	testConnection,
 };

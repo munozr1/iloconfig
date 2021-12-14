@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 const yargs = require("yargs");
 const actions = require("./actions.js");
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 const usage = "usage: ilo <-f> <file>";
 const options = yargs
 	.usage(usage)
@@ -35,7 +35,9 @@ let auth;
 // }
 
 if (yargs.argv.d == true || yargs.argv.default == true) {
-	auth = actions.login("192.168.3.127", "administrator", "8CPD8278");
+	actions.login("192.168.3.125", "Administrator", "NP26K567");
+	// actions.login("192.168.3.179", "administrator", "HKXDQ6G6");
+	// actions.testConnection("192.168.3.125");
 	// console.log("AUTH: ", auth);
 }
 
