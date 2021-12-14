@@ -36,9 +36,9 @@ let auth;
 
 if (yargs.argv.d == true || yargs.argv.default == true) {
 	 actions.createSession("192.168.3.125", "Administrator", "NP26K567", (auth) => {
-		 console.log(`[ x-auth-token ] `.green.bold, `${auth.token}`.bold);
+		 console.log(`[ Session Created ] `.green.bold, auth);
 		 actions.createUser(auth, {
-		 	"UserName": "33omarTestUserName",
+		 	"UserName": "44433omarTestUserName",
 		 	"Password": "superSecure",
 		 	// "Oem": {
 		 	// 	"Hpe": {

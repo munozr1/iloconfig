@@ -54,7 +54,6 @@ async function createSession(ip, u, p, next) {
 	return axios(config)
 		.then(response => {
 			console.log('')
-			console.log(`[ Session Created ] `.green.bold, response.data)
 			next({
 				token: response.headers['x-auth-token'],
 				baseUrl: `https://${ip}/redfish/v1`,
@@ -70,7 +69,7 @@ async function createUser(auth, createUserPayload) {
 	const data = JSON.stringify(createUserPayload);
 
 	const config = {
-		method: 'get',
+		method: 'post',
 		url: `${auth.baseUrl}/AccountService/Accounts`,
 		headers: {
 			'Content-Type': 'application/json',
@@ -82,11 +81,10 @@ async function createUser(auth, createUserPayload) {
 
 	axios(config)
 		.then(function (response) {
-			console.log(JSON.stringify(response.data));
+			console.log(`Create User Respnse => `.green.bold)
+			console.log(response.data);
 		})
-		.catch(function (error) {
-			console.log(error);
-		});
+		.catch(error => console.log("ERROR".bgRed.white, `${pretty(error.response.data)}`.red.bold));
 
 }
 
@@ -316,3 +314,8 @@ module.exports = {
 	createSession,
 	createUser
 };
+
+
+function pretty(obj) {
+	return JSON.stringify(obj, null, 2)
+}
