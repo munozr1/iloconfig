@@ -54,6 +54,7 @@ async function createSession(ip, u, p, next) {
 	return axios(config)
 		.then(response => {
 			console.log('')
+			console.log(`[ Session Created ] `.green.bold, response.data.Id)
 			next({
 				token: response.headers['x-auth-token'],
 				baseUrl: `https://${ip}/redfish/v1`,

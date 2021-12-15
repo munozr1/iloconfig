@@ -40,13 +40,6 @@ if (yargs.argv.d == true || yargs.argv.default == true) {
 		 actions.createUser(auth, {
 		 	"UserName": "44433omarTestUserName",
 		 	"Password": "superSecure",
-		 	// "Oem": {
-		 	// 	"Hpe": {
-		 	// 		"Enabled": true,
-		 	// 		"DisplayName": "omarTestDisplayName",
-		 	// 		"Privilege": "{privilege}"
-		 	// 	}
-		 	// }
 		 })
 	 }).catch(er => {
 		 console.log('ERRRRRR', er)
