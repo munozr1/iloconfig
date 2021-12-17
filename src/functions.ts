@@ -57,3 +57,22 @@ export function parseCSV(filename: string) {
 		return result;
 	});
 }
+
+export function pushHeaders(output: string[], input: string[]) {
+	console.log("got to push function");
+	console.log("output: ", output);
+	console.log("input: ", input.length);
+	let i;
+	for (i = 0; i < input.length && !input[i].includes("-"); i++) {
+		output.push(input[i]);
+		console.log("push function iteration", i);
+	}
+	input.splice(0, i);
+	return output;
+}
+
+export function setHeaders(input: string[], output: any) {
+	input.forEach((item) => {
+		output[item] = true;
+	});
+}

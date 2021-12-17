@@ -1,5 +1,10 @@
 #! /usr/bin/env node
-import { parseCSV } from "./functions";
+
+// import { pushHeaders } from "./functions";`
+
+import { pushHeaders, setHeaders } from "./functions";
+
+// import { parseCSV } from "./functions";
 const yargs = require("yargs");
 // const actions = require("./actions.js");
 const usage = "usage: ilo <-f> <file>";
@@ -23,7 +28,30 @@ const options = yargs
 //parse arguments passed in
 console.log("options", options);
 
-let data: any = [];
+// let data: any = [];
+let inputHeaders: string[] = [];
+let fileHeaders: any = {};
+let filename;
+let argv: string[] = process.argv.slice(2);
+
+console.log("ARGV RAW ARRAY", argv);
+while (argv.length) {
+	if (argv[0] === "-h") {
+		argv.splice(0, 1);
+		pushHeaders(inputHeaders, argv);
+		console.log("inputHeaders; ", inputHeaders);
+		setHeaders(inputHeaders, fileHeaders);
+		console.log("fileHeaders: ", fileHeaders);
+	}
+	if (argv[0] === "-f") {
+		filename = argv[1];
+		argv.splice(0, 2);
+		console.log("filename: ", filename);
+	}
+}
+console.log("new argv length: ", argv.length);
+console.log("new argv: ", argv);
+
 // console.log("DATA: ", data);
 
 // iterate through the argv array in a for loop. Use a switch to determine which flag was passed in.
@@ -31,9 +59,6 @@ let data: any = [];
 // if the flag is -d, then call the defaultConfig function.
 // https://github.com/HewlettPackard/javascript-ilorest-library/blob/master/examples/Redfish/ex48_set_ilo_hostname.js
 // this link has js code that can help figure out the uri's for the rest of the functions
-if (yargs.argv.f) {
-	data = parseCSV("servers.csv");
-	console.log("PWD", process.cwd());
-
-	console.log("DATA: ", data);
-}
+// if (yargs.argv.f) {
+// 	data = parseCSV(yargs.argv.f);
+// }

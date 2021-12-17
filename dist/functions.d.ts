@@ -28,3 +28,5 @@ DATA [
   ]
  */
 export declare function parseCSV(filename: string): void;
+export declare function pushHeaders(output: string[], input: string[]): string[];
+export declare function setHeaders(input: string[], output: any): void;

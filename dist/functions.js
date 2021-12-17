@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseCSV = void 0;
+exports.setHeaders = exports.pushHeaders = exports.parseCSV = void 0;
 const tslib_1 = require("tslib");
 //import fs
 const fs = (0, tslib_1.__importStar)(require("fs"));
@@ -57,4 +57,23 @@ function parseCSV(filename) {
     });
 }
 exports.parseCSV = parseCSV;
+function pushHeaders(output, input) {
+    console.log("got to push function");
+    console.log("output: ", output);
+    console.log("input: ", input.length);
+    let i;
+    for (i = 0; i < input.length && !input[i].includes("-"); i++) {
+        output.push(input[i]);
+        console.log("push function iteration", i);
+    }
+    input.splice(0, i);
+    return output;
+}
+exports.pushHeaders = pushHeaders;
+function setHeaders(input, output) {
+    input.forEach((item) => {
+        output[item] = true;
+    });
+}
+exports.setHeaders = setHeaders;
 //# sourceMappingURL=functions.js.map
