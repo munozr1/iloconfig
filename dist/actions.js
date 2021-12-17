@@ -4,6 +4,7 @@ exports.Server = void 0;
 const tslib_1 = require("tslib");
 const https_1 = (0, tslib_1.__importDefault)(require("https"));
 const axios_1 = (0, tslib_1.__importDefault)(require("axios"));
+const functions_1 = require("./functions");
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 /**
  * Server class defines a server object.
@@ -93,7 +94,7 @@ class Server {
                 console.log("RESP", resp);
             })
                 .catch((err) => {
-                console.log("ERR check if certificate is valid (most common)", err);
+                console.log("ERR check if certificate is valid (most common)", `${(0, functions_1.pretty)(err.response.data)}`);
             });
         });
     }
@@ -125,7 +126,7 @@ class Server {
             };
             return yield (0, axios_1.default)(methodInfo)
                 .then((resp) => {
-                console.log("RESP", resp);
+                console.log("USER CREATED SUCCESSFULLY", resp);
             })
                 .catch((err) => {
                 console.log("ERR check if certificate is valid (most common)", err);

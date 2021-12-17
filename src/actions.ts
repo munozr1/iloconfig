@@ -1,6 +1,7 @@
 import https from "https";
 import axios from "axios";
 import { CONFIG } from "./interfaces";
+import { pretty } from "./functions";
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
 /**
@@ -90,7 +91,7 @@ export class Server {
 				console.log("RESP", resp);
 			})
 			.catch((err) => {
-				console.log("ERR check if certificate is valid (most common)", err);
+				console.log("ERR check if certificate is valid (most common)", `${pretty(err.response.data)}`);
 			});
 	}
 
@@ -121,7 +122,7 @@ export class Server {
         } as any;
 		return await axios(methodInfo)
 			.then((resp) => {
-				console.log("RESP", resp);
+				console.log("USER CREATED SUCCESSFULLY", resp);
 			})
 			.catch((err) => {
 				console.log("ERR check if certificate is valid (most common)", err);

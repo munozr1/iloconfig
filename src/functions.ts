@@ -61,7 +61,7 @@ export async function parseCSV(filename: string): Promise<{
       result.push(obj);
     }
     result.shift();
-    // console.log("result", result);
+    console.log("result", result);
 	return result
 }
 
@@ -84,3 +84,6 @@ export function setHeaders(input: string[], output: any) {
 	});
 }
 
+export function pretty(obj: any) {
+  return JSON.stringify(obj, null, 2);
+}

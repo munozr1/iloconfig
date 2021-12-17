@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setHeaders = exports.pushHeaders = exports.parseCSV = void 0;
+exports.pretty = exports.setHeaders = exports.pushHeaders = exports.parseCSV = void 0;
 const tslib_1 = require("tslib");
 //import fs
 const fs_1 = require("fs");
@@ -57,7 +57,7 @@ function parseCSV(filename) {
             result.push(obj);
         }
         result.shift();
-        // console.log("result", result);
+        console.log("result", result);
         return result;
     });
 }
@@ -81,4 +81,8 @@ function setHeaders(input, output) {
     });
 }
 exports.setHeaders = setHeaders;
+function pretty(obj) {
+    return JSON.stringify(obj, null, 2);
+}
+exports.pretty = pretty;
 //# sourceMappingURL=functions.js.map
