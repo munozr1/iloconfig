@@ -10,6 +10,7 @@ export interface CONFIG {
 	token?: string;
 	license?: string;
 	dhcp?: boolean;
+	location?: string
 }
 
 export interface SERVERPROPERTIES {

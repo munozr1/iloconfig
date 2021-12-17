@@ -4,6 +4,7 @@ exports.Server = void 0;
 const tslib_1 = require("tslib");
 const https_1 = (0, tslib_1.__importDefault)(require("https"));
 const axios_1 = (0, tslib_1.__importDefault)(require("axios"));
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 /**
  * Server class defines a server object.
  * A server has the following:
@@ -16,6 +17,27 @@ class Server {
         });
         this.config = config;
     }
+    testConnection() {
+        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+            // const data = JSON.stringify({});
+            const methodInfo = {
+                method: 'get',
+                url: `https://${this.config.ip}/redfish/v1/`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    httpsAgent: this.agent,
+                },
+            };
+            return yield axios_1.default
+                .get(methodInfo.url)
+                .then((resp) => {
+                console.log("RESP", resp);
+            })
+                .catch((err) => {
+                console.log("ERR check if certificate is valid (most common)", err);
+            });
+        });
+    }
     /**
      *
      * @param {string} ip -> ip address of the server
@@ -27,14 +49,56 @@ class Server {
      */
     login() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-            return yield axios_1.default.post(`${this.config.ip}/redfish/v1/SessionsService/Sessions/`, {
+            const data = JSON.stringify({
                 UserName: this.config.default_username,
                 Password: this.config.default_password,
-            }, {
+            });
+            const methodInfo = {
+                method: 'post',
+                url: `https://${this.config.ip}/redfish/v1/SessionService/Sessions/`,
                 headers: {
-                    "Content-Type": "application/json",
-                    // httpsAgent: this.agent,
+                    'Content-Type': 'application/json',
+                    httpsAgent: this.agent,
                 },
+                data: data,
+            };
+            return yield (0, axios_1.default)(methodInfo)
+                .then((resp) => {
+                console.log("RESP", resp);
+            })
+                .catch((err) => {
+                console.log("ERR check if certificate is valid (most common)", err);
+            });
+        });
+    }
+    /**
+ *
+ * @param {string} ip -> ip address of the server
+ * @param {string} username -> default username of the server
+ * @param {string} password -> default password of the server
+ * @returns Ends the session
+ */
+    logout() {
+        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+            const data = JSON.stringify({
+                UserName: this.config.default_username,
+                Password: this.config.default_password,
+            });
+            const methodInfo = {
+                method: 'delete',
+                url: `${this.config.location}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    httpsAgent: this.agent,
+                },
+                data: data,
+            };
+            return yield (0, axios_1.default)(methodInfo)
+                .then((resp) => {
+                console.log("RESP", resp);
+            })
+                .catch((err) => {
+                console.log("ERR check if certificate is valid (most common)", err);
             });
         });
     }
@@ -49,17 +113,22 @@ class Server {
      */
     createUser() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-            return yield axios_1.default
-                .post(`${this.config.ip}/redfish/v1/Accounts/`, {
-                UserName: this.config.default_username,
-                Password: this.config.default_password,
+            const data = JSON.stringify({
+                UserName: this.config.new_username,
+                Password: this.config.new_password,
                 RoleId: this.config.role,
-            }, {
+            });
+            const methodInfo = {
+                method: 'post',
+                url: `https://${this.config.ip}/redfish/v1/AccountService/Accounts/`,
                 headers: {
-                    "Content-Type": "application/json",
-                    // "x-auth-token": this.config.token,
+                    'Content-Type': 'application/json',
+                    httpsAgent: this.agent,
+                    "x-auth-token": this.config.token,
                 },
-            })
+                data: data,
+            };
+            return yield (0, axios_1.default)(methodInfo)
                 .then((resp) => {
                 console.log("RESP", resp);
             })

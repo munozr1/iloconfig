@@ -1,6 +1,7 @@
 import https from "https";
 import axios from "axios";
 import { CONFIG } from "./interfaces";
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
 /**
  * Server class defines a server object.
@@ -15,6 +16,27 @@ export class Server {
 	constructor(config: CONFIG) {
 		this.config = config;
 	}
+
+
+	async testConnection(){
+		// const data = JSON.stringify({});
+        const methodInfo = {
+            method: 'get',
+            url: `https://${this.config.ip}/redfish/v1/`,
+            headers: {
+                'Content-Type': 'application/json',
+								httpsAgent: this.agent,
+            },
+        } as any;
+		return await axios
+			.get(methodInfo.url)
+			.then((resp) => {
+				console.log("RESP", resp);
+			})
+			.catch((err) => {
+				console.log("ERR check if certificate is valid (most common)", err);
+			});
+	}
 	/**
 	 *
 	 * @param {string} ip -> ip address of the server
@@ -25,19 +47,55 @@ export class Server {
 	 *          - location : the location url to logout
 	 */
 	async login() {
-		return await axios.post(
-			`${this.config.ip}/redfish/v1/SessionsService/Sessions/`,
-			{
-				UserName: this.config.default_username,
-				Password: this.config.default_password,
-			},
-			{
-				headers: {
-					"Content-Type": "application/json",
-					// httpsAgent: this.agent,
-				},
-			}
-		);
+		const data = JSON.stringify({
+			UserName: this.config.default_username,
+			Password: this.config.default_password,
+		});
+        const methodInfo = {
+            method: 'post',
+            url: `https://${this.config.ip}/redfish/v1/SessionService/Sessions/`,
+            headers: {
+                'Content-Type': 'application/json',
+								httpsAgent: this.agent,
+            },
+						data: data,
+        } as any;
+		return await axios(methodInfo)
+			.then((resp) => {
+				console.log("RESP", resp);
+			})
+			.catch((err) => {
+				console.log("ERR check if certificate is valid (most common)", err);
+			});
+	}
+		/**
+	 *
+	 * @param {string} ip -> ip address of the server
+	 * @param {string} username -> default username of the server
+	 * @param {string} password -> default password of the server
+	 * @returns Ends the session
+	 */
+	async logout() {
+		const data = JSON.stringify({
+			UserName: this.config.default_username,
+			Password: this.config.default_password,
+		});
+        const methodInfo = {
+            method: 'delete',
+            url: `${this.config.location}`,
+            headers: {
+                'Content-Type': 'application/json',
+								httpsAgent: this.agent,
+            },
+						data: data,
+        } as any;
+		return await axios(methodInfo)
+			.then((resp) => {
+				console.log("RESP", resp);
+			})
+			.catch((err) => {
+				console.log("ERR check if certificate is valid (most common)", err);
+			});
 	}
 
 	/**
@@ -50,21 +108,22 @@ export class Server {
 	 * @returns returns whether the user was created or not
 	 */
 	async createUser() {
-		return await axios
-			.post(
-				`${this.config.ip}/redfish/v1/Accounts/`,
-				{
-					UserName: this.config.default_username,
-					Password: this.config.default_password,
-					RoleId: this.config.role,
-				},
-				{
-					headers: {
-						"Content-Type": "application/json",
-						// "x-auth-token": this.config.token,
-					},
-				}
-			)
+		const data = JSON.stringify({
+			UserName: this.config.new_username,
+			Password: this.config.new_password,
+			RoleId: this.config.role,
+		});
+        const methodInfo = {
+            method: 'post',
+            url: `https://${this.config.ip}/redfish/v1/AccountService/Accounts/`,
+            headers: {
+                'Content-Type': 'application/json',
+								httpsAgent: this.agent,
+								"x-auth-token": this.config.token,
+            },
+						data: data,
+        } as any;
+		return await axios(methodInfo)
 			.then((resp) => {
 				console.log("RESP", resp);
 			})

@@ -10,6 +10,7 @@ export declare class Server {
     agent: https.Agent;
     config: CONFIG;
     constructor(config: CONFIG);
+    testConnection(): Promise<void>;
     /**
      *
      * @param {string} ip -> ip address of the server
@@ -19,7 +20,15 @@ export declare class Server {
      *          - x-auth-token : the token to be used in the next requests
      *          - location : the location url to logout
      */
-    login(): Promise<import("axios").AxiosResponse<any, any>>;
+    login(): Promise<void>;
+    /**
+ *
+ * @param {string} ip -> ip address of the server
+ * @param {string} username -> default username of the server
+ * @param {string} password -> default password of the server
+ * @returns Ends the session
+ */
+    logout(): Promise<void>;
     /**
      *
      * @param {string1} ip
