@@ -1,5 +1,6 @@
 //import fs
-import * as fs from "fs";
+import { promises as fs } from "fs";
+// const util = require("util");
 
 /**
  *
@@ -30,9 +31,9 @@ DATA [
 
   ]
  */
-export function parseCSV(filename: string): {
+export async function parseCSV(filename: string): Promise<{
    [key: string]: boolean | string,
-  }[]{
+  }[]>{
 	console.log("Parsing CSV file: " + filename);
 	let result: {
    [key: string]: boolean | string,
@@ -40,28 +41,27 @@ export function parseCSV(filename: string): {
 	let path = process.cwd();
 	console.log("PATH", path + "/" + filename);
 
-	fs.readFile(path + "/" + filename, "utf8", function (err, data) {
-		if (err) {
-			return console.log(err);
-		}
-		let lines = data.split("\n");
-		let headers: string[] = lines[0].split(",");
+	// read file
+	const data: string = await fs
+		.readFile(path + "/" + filename, "binary")
+		.catch(err => console.log(err)) as any;
 
-		
-		for (let i = 0; i < lines.length; i++) {
-			let obj: any = {};
-			let currentline = lines[i].split(",");
-			for (var j = 0; j < headers.length; j++) {
-				obj[headers[j]] = currentline[j];
-			}
-			console.log("obj", obj);
-			
-			result.push(obj);
-		}
-		result.shift();
-		// console.log("result", result);
+	// Parse contents
+    let lines = data.split("\n"); 
+    let headers: string[] = lines[0].split(",");
 
-	});
+    for (let i = 0; i < lines.length; i++) {
+      let obj: any = {};
+      let currentline = lines[i].split(",");
+      for (var j = 0; j < headers.length; j++) {
+        obj[headers[j]] = currentline[j];
+      }
+    //   console.log("obj", obj);
+
+      result.push(obj);
+    }
+    result.shift();
+    // console.log("result", result);
 	return result
 }
 

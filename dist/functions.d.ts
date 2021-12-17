@@ -27,8 +27,8 @@ DATA [
 
   ]
  */
-export declare function parseCSV(filename: string): {
+export declare function parseCSV(filename: string): Promise<{
     [key: string]: boolean | string;
-}[];
+}[]>;
 export declare function pushHeaders(output: string[], input: string[]): string[];
 export declare function setHeaders(input: string[], output: any): void;

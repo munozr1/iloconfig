@@ -24,9 +24,8 @@ console.log("options", options);
 let inputHeaders: string[] = [];
 let fileHeaders: any = {};
 let filename: string = "";
-let  file: {
-   [key: string]: boolean | string,
-  }[] = [];
+let  file: { [key: string]: boolean | string }[] = [];
+file;
 let argv: string[] = process.argv.slice(2);
 
 console.log("ARGV RAW ARRAY", argv);
@@ -45,13 +44,14 @@ while (argv.length) {
 		filename = argv[1];
 		argv.splice(0, 2);
 		console.log("filename: ", filename);
-	  file = parseCSV(filename);
+	  parseCSV(filename).then(file => {
+          console.log("file contents: ", file);
+      });
 		
 	}
 
 }
 
-console.log("file contents: ", file);
 // console.log("file length: ", file.length);
 
 // file.forEach(server => {

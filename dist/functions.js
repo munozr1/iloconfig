@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.setHeaders = exports.pushHeaders = exports.parseCSV = void 0;
 const tslib_1 = require("tslib");
 //import fs
-const fs = (0, tslib_1.__importStar)(require("fs"));
+const fs_1 = require("fs");
+// const util = require("util");
 /**
  *
  * @param {string} filename The name or path of the file to parse
@@ -34,14 +35,16 @@ DATA [
   ]
  */
 function parseCSV(filename) {
-    console.log("Parsing CSV file: " + filename);
-    let result = [];
-    let path = process.cwd();
-    console.log("PATH", path + "/" + filename);
-    fs.readFile(path + "/" + filename, "utf8", function (err, data) {
-        if (err) {
-            return console.log(err);
-        }
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        console.log("Parsing CSV file: " + filename);
+        let result = [];
+        let path = process.cwd();
+        console.log("PATH", path + "/" + filename);
+        // read file
+        const data = yield fs_1.promises
+            .readFile(path + "/" + filename, "binary")
+            .catch(err => console.log(err));
+        // Parse contents
         let lines = data.split("\n");
         let headers = lines[0].split(",");
         for (let i = 0; i < lines.length; i++) {
@@ -50,13 +53,13 @@ function parseCSV(filename) {
             for (var j = 0; j < headers.length; j++) {
                 obj[headers[j]] = currentline[j];
             }
-            console.log("obj", obj);
+            //   console.log("obj", obj);
             result.push(obj);
         }
         result.shift();
         // console.log("result", result);
+        return result;
     });
-    return result;
 }
 exports.parseCSV = parseCSV;
 function pushHeaders(output, input) {
