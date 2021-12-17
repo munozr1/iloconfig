@@ -75,4 +75,5 @@ export function setHeaders(input: string[], output: any) {
 	input.forEach((item) => {
 		output[item] = true;
 	});
+	console.log("");
 }
