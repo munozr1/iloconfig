@@ -1,0 +1,7 @@
+---
+
+actions: #list of actions you want to perform.
+  -login
+  -newuser
+  -hostname
+  -dhcp

@@ -11,3 +11,14 @@ export interface CONFIG {
 	license?: string;
 	dhcp?: boolean;
 }
+
+export interface SERVERPROPERTIES {
+	dusername?: string;
+	ip?: string;
+	dpassword?: string;
+	nusername?: string;
+	npassword?: string;
+	role?: string;
+	hostname?: string;
+	dhcp?: boolean;
+}

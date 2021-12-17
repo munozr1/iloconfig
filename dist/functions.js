@@ -34,6 +34,8 @@ DATA [
   ]
  */
 function parseCSV(filename) {
+    console.log("Parsing CSV file: " + filename);
+    let result = [];
     let path = process.cwd();
     console.log("PATH", path + "/" + filename);
     fs.readFile(path + "/" + filename, "utf8", function (err, data) {
@@ -42,19 +44,19 @@ function parseCSV(filename) {
         }
         let lines = data.split("\n");
         let headers = lines[0].split(",");
-        let result = [];
         for (let i = 0; i < lines.length; i++) {
             let obj = {};
             let currentline = lines[i].split(",");
             for (var j = 0; j < headers.length; j++) {
                 obj[headers[j]] = currentline[j];
             }
+            console.log("obj", obj);
             result.push(obj);
         }
         result.shift();
-        console.log("DATA", result);
-        return result;
+        // console.log("result", result);
     });
+    return result;
 }
 exports.parseCSV = parseCSV;
 function pushHeaders(output, input) {

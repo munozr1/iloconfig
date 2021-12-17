@@ -30,7 +30,13 @@ DATA [
 
   ]
  */
-export function parseCSV(filename: string) {
+export function parseCSV(filename: string): {
+   [key: string]: boolean | string,
+  }[]{
+	console.log("Parsing CSV file: " + filename);
+	let result: {
+   [key: string]: boolean | string,
+  }[] = [];
 	let path = process.cwd();
 	console.log("PATH", path + "/" + filename);
 
@@ -41,21 +47,22 @@ export function parseCSV(filename: string) {
 		let lines = data.split("\n");
 		let headers: string[] = lines[0].split(",");
 
-		let result = [];
+		
 		for (let i = 0; i < lines.length; i++) {
 			let obj: any = {};
 			let currentline = lines[i].split(",");
 			for (var j = 0; j < headers.length; j++) {
 				obj[headers[j]] = currentline[j];
 			}
-
+			console.log("obj", obj);
+			
 			result.push(obj);
 		}
 		result.shift();
-		console.log("DATA", result);
+		// console.log("result", result);
 
-		return result;
 	});
+	return result
 }
 
 export function pushHeaders(output: string[], input: string[]) {
@@ -75,5 +82,5 @@ export function setHeaders(input: string[], output: any) {
 	input.forEach((item) => {
 		output[item] = true;
 	});
-	console.log("");
 }
+
