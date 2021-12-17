@@ -79,7 +79,7 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 	};
 	let server = new Server(config);
 
-	 server.createUser()
+	 server.logout()
 
 }
 

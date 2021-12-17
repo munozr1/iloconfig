@@ -76,10 +76,7 @@ export class Server {
 	 * @returns Ends the session
 	 */
 	async logout() {
-		const data = JSON.stringify({
-			UserName: this.config.default_username,
-			Password: this.config.default_password,
-		});
+		
         const methodInfo = {
             method: 'delete',
             url: `${this.config.location}`,
@@ -87,7 +84,6 @@ export class Server {
                 'Content-Type': 'application/json',
 								httpsAgent: this.agent,
             },
-						data: data,
         } as any;
 		return await axios(methodInfo)
 			.then((resp) => {

@@ -80,10 +80,6 @@ class Server {
  */
     logout() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-            const data = JSON.stringify({
-                UserName: this.config.default_username,
-                Password: this.config.default_password,
-            });
             const methodInfo = {
                 method: 'delete',
                 url: `${this.config.location}`,
@@ -91,7 +87,6 @@ class Server {
                     'Content-Type': 'application/json',
                     httpsAgent: this.agent,
                 },
-                data: data,
             };
             return yield (0, axios_1.default)(methodInfo)
                 .then((resp) => {

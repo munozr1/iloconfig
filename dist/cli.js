@@ -68,7 +68,7 @@ function test() {
         location: "https://192.168.3.125/redfish/v1/SessionService/Sessions/administrator000000000000031113f7ced9/",
     };
     let server = new actions_1.Server(config);
-    server.createUser();
+    server.logout();
 }
 test();
 // file.forEach(server => {
