@@ -23,10 +23,11 @@ class Server {
             // const data = JSON.stringify({});
             const methodInfo = {
                 method: 'get',
-                url: `https://${this.config.ip}/redfish/v1/`,
+                url: `https://${this.config.ip}/redfish/v1/systems/1/bios`,
                 headers: {
                     'Content-Type': 'application/json',
                     httpsAgent: this.agent,
+                    "x-auth-token": this.config.token,
                 },
             };
             return yield axios_1.default
@@ -65,7 +66,10 @@ class Server {
             };
             return yield (0, axios_1.default)(methodInfo)
                 .then((resp) => {
-                console.log("RESP", resp);
+                console.log("RESP", resp.headers["x-auth-token"]);
+                console.log("RESP", resp.headers.location);
+                this.config.token = resp.headers["x-auth-token"];
+                this.config.location = resp.headers.location;
             })
                 .catch((err) => {
                 console.log("ERR check if certificate is valid (most common)", err);
@@ -162,20 +166,22 @@ class Server {
     //"Oem/Hp/DHCPv4/Enabled" : EthernetInterfaces
     changeDHCP() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-            return yield axios_1.default
-                .patch(`${this.config.ip}/redfish/v1/Oem/Hp/DHCPv4/Enabled`, {
-                Oem: {
-                    Hp: {
-                        DHCPv4: {
-                            Enabled: this.config.dhcp,
-                        },
-                    },
-                },
-            }, {
+            let data = JSON.stringify({
+                "DHCPv4": {
+                    "DHCPEnabled": this.config.dhcp
+                }
+            });
+            const methodInfo = {
+                method: 'post',
+                url: `https://${this.config.ip}/redfish/v1/managers/1/ethernetinterfaces/1`,
                 headers: {
-                // "x-auth-token": this.config.token,
+                    'Content-Type': 'application/json',
+                    httpsAgent: this.agent,
+                    "x-auth-token": this.config.token,
                 },
-            })
+                data: data,
+            };
+            return yield (0, axios_1.default)(methodInfo)
                 .then((resp) => {
                 console.log("RESP", resp);
             })

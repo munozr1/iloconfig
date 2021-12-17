@@ -23,10 +23,11 @@ export class Server {
 		// const data = JSON.stringify({});
         const methodInfo = {
             method: 'get',
-            url: `https://${this.config.ip}/redfish/v1/`,
+            url: `https://${this.config.ip}/redfish/v1/systems/1/bios`,
             headers: {
                 'Content-Type': 'application/json',
 								httpsAgent: this.agent,
+								"x-auth-token": this.config.token,
             },
         } as any;
 		return await axios
@@ -63,7 +64,10 @@ export class Server {
         } as any;
 		return await axios(methodInfo)
 			.then((resp) => {
-				console.log("RESP", resp);
+				console.log("RESP", resp.headers["x-auth-token"]);
+				console.log("RESP", resp.headers.location);
+				this.config.token = resp.headers["x-auth-token"];
+				this.config.location = resp.headers.location;
 			})
 			.catch((err) => {
 				console.log("ERR check if certificate is valid (most common)", err);
@@ -160,24 +164,23 @@ export class Server {
 
 	//"Oem/Hp/DHCPv4/Enabled" : EthernetInterfaces
 	async changeDHCP() {
-		return await axios
-			.patch(
-				`${this.config.ip}/redfish/v1/Oem/Hp/DHCPv4/Enabled`,
-				{
-					Oem: {
-						Hp: {
-							DHCPv4: {
-								Enabled: this.config.dhcp,
-							},
-						},
-					},
-				},
-				{
-					headers: {
-						// "x-auth-token": this.config.token,
-					},
-				}
-			)
+
+		let data = JSON.stringify({
+  "DHCPv4": {
+    "DHCPEnabled": this.config.dhcp
+  }
+});
+const methodInfo = {
+            method: 'post',
+            url: `https://${this.config.ip}/redfish/v1/managers/1/ethernetinterfaces/1`,
+            headers: {
+                'Content-Type': 'application/json',
+								httpsAgent: this.agent,
+								"x-auth-token": this.config.token,
+            },
+						data: data,
+        } as any;
+		return await axios(methodInfo)
 			.then((resp) => {
 				console.log("RESP", resp);
 			})

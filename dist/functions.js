@@ -53,7 +53,6 @@ function parseCSV(filename) {
             for (var j = 0; j < headers.length; j++) {
                 obj[headers[j]] = currentline[j];
             }
-            //   console.log("obj", obj);
             result.push(obj);
         }
         result.shift();
