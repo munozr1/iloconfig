@@ -10,6 +10,10 @@ export declare class Server {
     agent: https.Agent;
     config: CONFIG;
     constructor(config: CONFIG);
+    /**
+     *
+     * @returns 200 if the server is reachable.
+     */
     testConnection(): Promise<void>;
     /**
      *
@@ -22,12 +26,12 @@ export declare class Server {
      */
     login(): Promise<void>;
     /**
- *
- * @param {string} ip -> ip address of the server
- * @param {string} username -> default username of the server
- * @param {string} password -> default password of the server
- * @returns Ends the session
- */
+     *
+     * @param {string} ip -> ip address of the server
+     * @param {string} username -> default username of the server
+     * @param {string} password -> default password of the server
+     * @returns Ends the session
+     */
     logout(): Promise<void>;
     /**
      *

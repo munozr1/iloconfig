@@ -18,22 +18,25 @@ export class Server {
 		this.config = config;
 	}
 
-
-	async testConnection(){
+	/**
+	 *
+	 * @returns 200 if the server is reachable.
+	 */
+	async testConnection() {
 		// const data = JSON.stringify({});
-        const methodInfo = {
-            method: 'get',
-            url: `https://${this.config.ip}/redfish/v1/systems/1/bios`,
-            headers: {
-                'Content-Type': 'application/json',
-								httpsAgent: this.agent,
-								"x-auth-token": this.config.token,
-            },
-        } as any;
+		const methodInfo = {
+			method: "get",
+			url: `https://${this.config.ip}/redfish/v1/systems/1/bios`,
+			headers: {
+				"Content-Type": "application/json",
+				httpsAgent: this.agent,
+				"x-auth-token": this.config.token,
+			},
+		} as any;
 		return await axios
 			.get(methodInfo.url)
 			.then((resp) => {
-				console.log("RESP", resp);
+				console.log("RESP", resp.status);
 			})
 			.catch((err) => {
 				console.log("ERR check if certificate is valid (most common)", err);
@@ -53,15 +56,15 @@ export class Server {
 			UserName: this.config.default_username,
 			Password: this.config.default_password,
 		});
-        const methodInfo = {
-            method: 'post',
-            url: `https://${this.config.ip}/redfish/v1/SessionService/Sessions/`,
-            headers: {
-                'Content-Type': 'application/json',
-								httpsAgent: this.agent,
-            },
-						data: data,
-        } as any;
+		const methodInfo = {
+			method: "post",
+			url: `https://${this.config.ip}/redfish/v1/SessionService/Sessions/`,
+			headers: {
+				"Content-Type": "application/json",
+				httpsAgent: this.agent,
+			},
+			data: data,
+		} as any;
 		return await axios(methodInfo)
 			.then((resp) => {
 				console.log("RESP", resp.headers["x-auth-token"]);
@@ -73,7 +76,7 @@ export class Server {
 				console.log("ERR check if certificate is valid (most common)", err);
 			});
 	}
-		/**
+	/**
 	 *
 	 * @param {string} ip -> ip address of the server
 	 * @param {string} username -> default username of the server
@@ -81,21 +84,23 @@ export class Server {
 	 * @returns Ends the session
 	 */
 	async logout() {
-		
-        const methodInfo = {
-            method: 'delete',
-            url: `${this.config.location}`,
-            headers: {
-                'Content-Type': 'application/json',
-								httpsAgent: this.agent,
-            },
-        } as any;
+		const methodInfo = {
+			method: "delete",
+			url: `${this.config.location}`,
+			headers: {
+				"Content-Type": "application/json",
+				httpsAgent: this.agent,
+			},
+		} as any;
 		return await axios(methodInfo)
 			.then((resp) => {
 				console.log("RESP", resp);
 			})
 			.catch((err) => {
-				console.log("ERR check if certificate is valid (most common)", `${pretty(err.response.data)}`);
+				console.log(
+					"ERR check if certificate is valid (most common)",
+					`${pretty(err.response.data)}`
+				);
 			});
 	}
 
@@ -114,16 +119,16 @@ export class Server {
 			Password: this.config.new_password,
 			RoleId: this.config.role,
 		});
-        const methodInfo = {
-            method: 'post',
-            url: `https://${this.config.ip}/redfish/v1/AccountService/Accounts/`,
-            headers: {
-                'Content-Type': 'application/json',
-								httpsAgent: this.agent,
-								"x-auth-token": this.config.token,
-            },
-						data: data,
-        } as any;
+		const methodInfo = {
+			method: "post",
+			url: `https://${this.config.ip}/redfish/v1/AccountService/Accounts/`,
+			headers: {
+				"Content-Type": "application/json",
+				httpsAgent: this.agent,
+				"x-auth-token": this.config.token,
+			},
+			data: data,
+		} as any;
 		return await axios(methodInfo)
 			.then((resp) => {
 				console.log("USER CREATED SUCCESSFULLY", resp);
@@ -164,22 +169,21 @@ export class Server {
 
 	//"Oem/Hp/DHCPv4/Enabled" : EthernetInterfaces
 	async changeDHCP() {
-
 		let data = JSON.stringify({
-  "DHCPv4": {
-    "DHCPEnabled": this.config.dhcp
-  }
-});
-const methodInfo = {
-            method: 'post',
-            url: `https://${this.config.ip}/redfish/v1/managers/1/ethernetinterfaces/1`,
-            headers: {
-                'Content-Type': 'application/json',
-								httpsAgent: this.agent,
-								"x-auth-token": this.config.token,
-            },
-						data: data,
-        } as any;
+			DHCPv4: {
+				DHCPEnabled: this.config.dhcp,
+			},
+		});
+		const methodInfo = {
+			method: "post",
+			url: `https://${this.config.ip}/redfish/v1/managers/1/ethernetinterfaces/1`,
+			headers: {
+				"Content-Type": "application/json",
+				httpsAgent: this.agent,
+				"x-auth-token": this.config.token,
+			},
+			data: data,
+		} as any;
 		return await axios(methodInfo)
 			.then((resp) => {
 				console.log("RESP", resp);

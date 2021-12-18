@@ -18,14 +18,18 @@ class Server {
         });
         this.config = config;
     }
+    /**
+     *
+     * @returns 200 if the server is reachable.
+     */
     testConnection() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             // const data = JSON.stringify({});
             const methodInfo = {
-                method: 'get',
+                method: "get",
                 url: `https://${this.config.ip}/redfish/v1/systems/1/bios`,
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                     httpsAgent: this.agent,
                     "x-auth-token": this.config.token,
                 },
@@ -33,7 +37,7 @@ class Server {
             return yield axios_1.default
                 .get(methodInfo.url)
                 .then((resp) => {
-                console.log("RESP", resp);
+                console.log("RESP", resp.status);
             })
                 .catch((err) => {
                 console.log("ERR check if certificate is valid (most common)", err);
@@ -56,10 +60,10 @@ class Server {
                 Password: this.config.default_password,
             });
             const methodInfo = {
-                method: 'post',
+                method: "post",
                 url: `https://${this.config.ip}/redfish/v1/SessionService/Sessions/`,
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                     httpsAgent: this.agent,
                 },
                 data: data,
@@ -77,19 +81,19 @@ class Server {
         });
     }
     /**
- *
- * @param {string} ip -> ip address of the server
- * @param {string} username -> default username of the server
- * @param {string} password -> default password of the server
- * @returns Ends the session
- */
+     *
+     * @param {string} ip -> ip address of the server
+     * @param {string} username -> default username of the server
+     * @param {string} password -> default password of the server
+     * @returns Ends the session
+     */
     logout() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             const methodInfo = {
-                method: 'delete',
+                method: "delete",
                 url: `${this.config.location}`,
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                     httpsAgent: this.agent,
                 },
             };
@@ -119,10 +123,10 @@ class Server {
                 RoleId: this.config.role,
             });
             const methodInfo = {
-                method: 'post',
+                method: "post",
                 url: `https://${this.config.ip}/redfish/v1/AccountService/Accounts/`,
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                     httpsAgent: this.agent,
                     "x-auth-token": this.config.token,
                 },
@@ -167,15 +171,15 @@ class Server {
     changeDHCP() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             let data = JSON.stringify({
-                "DHCPv4": {
-                    "DHCPEnabled": this.config.dhcp
-                }
+                DHCPv4: {
+                    DHCPEnabled: this.config.dhcp,
+                },
             });
             const methodInfo = {
-                method: 'post',
+                method: "post",
                 url: `https://${this.config.ip}/redfish/v1/managers/1/ethernetinterfaces/1`,
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                     httpsAgent: this.agent,
                     "x-auth-token": this.config.token,
                 },
