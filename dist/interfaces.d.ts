@@ -12,13 +12,3 @@ export interface CONFIG {
     dhcp?: boolean;
     location?: string;
 }
-export interface SERVERPROPERTIES {
-    dusername?: string;
-    ip?: string;
-    dpassword?: string;
-    nusername?: string;
-    npassword?: string;
-    role?: string;
-    hostname?: string;
-    dhcp?: boolean;
-}

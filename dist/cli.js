@@ -57,9 +57,15 @@ function test(file) {
     // 		"https://192.168.3.125/redfish/v1/SessionService/Sessions/administrator0000000000000f2b15810625/",
     // 	token: "af8dfc21532048003c37e2982d6df0ab",
     // };
+    (0, functions_1.validateConfig)(file);
     file.forEach((config) => {
         let server = new actions_1.Server(config);
-        console.log("SERVER ", server.config.ip);
+        if (server.config.ip) {
+            console.log("SERVER LOGGED IN SUCCESSFULLY: ", server.config.ip);
+        }
+        else {
+            console.log("SERVER IP NOT PROVIDED", config);
+        }
     });
     //  server.logout();
     // server.login();

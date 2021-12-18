@@ -3,7 +3,7 @@ import { CONFIG } from "./interfaces";
 import { Server } from "./actions";
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
-import { parseCSV } from "./functions";
+import { parseCSV, validateConfig } from "./functions";
 
 async function main() {
 	const yargs = require("yargs");
@@ -61,9 +61,14 @@ function test(file: CONFIG[]) {
 	// 		"https://192.168.3.125/redfish/v1/SessionService/Sessions/administrator0000000000000f2b15810625/",
 	// 	token: "af8dfc21532048003c37e2982d6df0ab",
 	// };
+	validateConfig(file);
 	file.forEach((config) => {
 		let server = new Server(config);
-		console.log("SERVER ", server.config.ip);
+		if (server.config.ip) {
+			console.log("SERVER LOGGED IN SUCCESSFULLY: ", server.config.ip);
+		} else {
+			console.log("SERVER IP NOT PROVIDED", config);
+		}
 	});
 	//  server.logout();
 	// server.login();

@@ -85,3 +85,35 @@ export function setHeaders(input: string[], output: any) {
 export function pretty(obj: any) {
 	return JSON.stringify(obj, null, 2);
 }
+
+export function validateConfig(config: CONFIG[]) {
+	let errors: string[] = [];
+	for (let i = 0; i < config.length; i++) {
+		if (!config[i].ip) {
+			errors.push("IP is required");
+		}
+		if (!config[i].default_username) {
+			errors.push("Default username is required");
+		}
+		if (!config[i].default_password) {
+			errors.push("Default password is required");
+		}
+		if (!config[i].new_username) {
+			errors.push("New username is required");
+		}
+		if (!config[i].new_password) {
+			errors.push("New password is required");
+		}
+		if (!config[i].role) {
+			errors.push("Role is required");
+		}
+		if (!config[i].new_hostname) {
+			errors.push("New hostname is required");
+		}
+		if (errors.length > 0) {
+			throw new Error(errors.join("\n"));
+		}
+	}
+
+	return config;
+}

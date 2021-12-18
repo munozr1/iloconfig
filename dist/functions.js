@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pretty = exports.setHeaders = exports.pushHeaders = exports.parseCSV = void 0;
+exports.validateConfig = exports.pretty = exports.setHeaders = exports.pushHeaders = exports.parseCSV = void 0;
 const tslib_1 = require("tslib");
 //import fs
 const fs_1 = require("fs");
@@ -85,4 +85,35 @@ function pretty(obj) {
     return JSON.stringify(obj, null, 2);
 }
 exports.pretty = pretty;
+function validateConfig(config) {
+    let errors = [];
+    for (let i = 0; i < config.length; i++) {
+        if (!config[i].ip) {
+            errors.push("IP is required");
+        }
+        if (!config[i].default_username) {
+            errors.push("Default username is required");
+        }
+        if (!config[i].default_password) {
+            errors.push("Default password is required");
+        }
+        if (!config[i].new_username) {
+            errors.push("New username is required");
+        }
+        if (!config[i].new_password) {
+            errors.push("New password is required");
+        }
+        if (!config[i].role) {
+            errors.push("Role is required");
+        }
+        if (!config[i].new_hostname) {
+            errors.push("New hostname is required");
+        }
+        if (errors.length > 0) {
+            throw new Error(errors.join("\n"));
+        }
+    }
+    return config;
+}
+exports.validateConfig = validateConfig;
 //# sourceMappingURL=functions.js.map

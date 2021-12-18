@@ -32,3 +32,4 @@ export declare function parseCSV(filename: string, fileHeaders: Object): Promise
 export declare function pushHeaders(output: string[], input: string[]): string[];
 export declare function setHeaders(input: string[], output: any): void;
 export declare function pretty(obj: any): string;
+export declare function validateConfig(config: CONFIG[]): CONFIG[];
