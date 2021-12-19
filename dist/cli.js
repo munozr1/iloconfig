@@ -9,7 +9,8 @@ function main() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const yargs = require("yargs");
         const usage = "usage: ilo <-f> <file>";
-        const options = yargs
+        // @ts-ignore
+        const _options = yargs
             .usage(usage)
             .options({
             f: {
@@ -20,7 +21,6 @@ function main() {
             },
         })
             .help(true).argv;
-        console.log("options", options);
         let fileHeaders = {};
         let filename = "";
         let file = [];

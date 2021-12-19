@@ -88,27 +88,28 @@ export function pretty(obj: any) {
 
 export function validateConfig(config: CONFIG[]) {
 	let errors: string[] = [];
+	let ipList: string[] = [];
 	for (let i = 0; i < config.length; i++) {
 		if (!config[i].ip) {
 			errors.push("IP is required");
+		} else if (!validIp(config[i].ip)) {
+			errors.push("IP is invalid");
+		} else if (ipList.includes(config[i].ip)) {
+			errors.push("Duplicate IP", config[i].ip);
+		} else {
+			ipList.push(config[i].ip);
 		}
 		if (!config[i].default_username) {
-			errors.push("Default username is required");
+			errors.push("Default Username is required");
 		}
 		if (!config[i].default_password) {
-			errors.push("Default password is required");
+			errors.push("Default Password is required");
 		}
-		if (!config[i].new_username) {
-			errors.push("New username is required");
+		if (config[i].new_username && !config[i].new_password) {
+			errors.push("New Username is set but no password");
 		}
-		if (!config[i].new_password) {
-			errors.push("New password is required");
-		}
-		if (!config[i].role) {
-			errors.push("Role is required");
-		}
-		if (!config[i].new_hostname) {
-			errors.push("New hostname is required");
+		if (config[i].new_password && !config[i].new_username) {
+			errors.push("New Password is set but no username");
 		}
 		if (errors.length > 0) {
 			throw new Error(errors.join("\n"));
@@ -116,4 +117,13 @@ export function validateConfig(config: CONFIG[]) {
 	}
 
 	return config;
+}
+
+function validIp(ip: string) {
+	let parts = ip.split(".");
+	if (parts.length != 4) return false;
+	for (let i = 0; i < parts.length; i++) {
+		if (parseInt(parts[i]) < 0 || parseInt(parts[i]) > 255) return false;
+	}
+	return true;
 }
