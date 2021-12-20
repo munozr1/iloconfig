@@ -53,4 +53,5 @@ export declare class Server {
     setLicense(): Promise<void>;
     changeDHCP(): Promise<void>;
     changeHostname(): Promise<void>;
+    changeIp(): Promise<void>;
 }

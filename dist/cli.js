@@ -7,39 +7,50 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 const functions_1 = require("./functions");
 function main() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        const readline = require("readline");
         const yargs = require("yargs");
-        const usage = "usage: ilo <-f> <file>";
+        const usage = "usage: ilo <-f> <file>  ";
         // @ts-ignore
         const _options = yargs
             .usage(usage)
             .options({
             f: {
                 alias: "fileconfig",
-                describe: "file containing list of ip addresses, username and password etc",
+                describe: "file containing: csv file with the following columns: ip, default_username, default_password, new_username, new_password, role, new_hostname, static_ip, license, dhcp",
                 type: "string",
                 demand: true,
             },
         })
             .help(true).argv;
-        let fileHeaders = {};
         let filename = "";
         let file = [];
         let argv = process.argv.slice(2);
-        console.log("ARGV RAW ARRAY", argv);
         while (argv.length) {
             if (argv[0] === "-f") {
                 filename = argv[1];
                 argv.splice(0, 2);
-                // console.log("filename: ", filename);
-                yield (0, functions_1.parseCSV)(filename, fileHeaders).then((data) => {
+                yield (0, functions_1.parseCSV)(filename).then((data) => {
                     file = data;
-                    file.pop();
-                    // console.log("file: ", file);
-                    console.log("fileHeaders", fileHeaders);
+                    // file.pop();
                 });
             }
+            else {
+                console.log("Invalid argument");
+                process.exit(1);
+            }
         }
-        test(file);
+        const userConfimation = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        });
+        yield userConfimation.question(`Modify ${file.length} servers? (y/n)`, (resp) => {
+            if (resp === "y") {
+                test(file);
+            }
+            else {
+                process.exit(0);
+            }
+        });
         return 0;
     });
 }
@@ -60,11 +71,23 @@ function test(file) {
     (0, functions_1.validateConfig)(file);
     file.forEach((config) => {
         let server = new actions_1.Server(config);
-        if (server.config.ip) {
-            console.log("SERVER LOGGED IN SUCCESSFULLY: ", server.config.ip);
+        if (config.ip && config.default_username && config.default_password) {
+            server.login();
         }
-        else {
-            console.log("SERVER IP NOT PROVIDED", config);
+        if (config.new_username && config.new_password && config.role) {
+            server.createUser();
+        }
+        if (config.new_hostname) {
+            server.changeHostname();
+        }
+        if (config.license) {
+            server.setLicense();
+        }
+        if (config.dhcp) {
+            server.changeDHCP();
+        }
+        if (config.static_ip) {
+            server.changeIp();
         }
     });
     //  server.logout();

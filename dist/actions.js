@@ -217,6 +217,28 @@ class Server {
             });
         });
     }
+    changeIp() {
+        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+            return yield axios_1.default
+                .post(`${this.config.ip}rest/v1/Managers/1/EthernetInterfaces/`, {
+                Oem: {
+                    Hp: {
+                        HostName: this.config.new_hostname,
+                    },
+                },
+            }, {
+                headers: {
+                // "x-auth-token": this.config.token,
+                },
+            })
+                .then((resp) => {
+                console.log("RESP", resp);
+            })
+                .catch((err) => {
+                console.log("ERR check if certificate is valid (most common)", err);
+            });
+        });
+    }
 }
 exports.Server = Server;
 //# sourceMappingURL=actions.js.map

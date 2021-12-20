@@ -28,7 +28,7 @@ DATA [
 
   ]
  */
-export declare function parseCSV(filename: string, fileHeaders: Object): Promise<CONFIG[]>;
+export declare function parseCSV(filename: string): Promise<CONFIG[]>;
 export declare function pushHeaders(output: string[], input: string[]): string[];
 export declare function setHeaders(input: string[], output: any): void;
 export declare function pretty(obj: any): string;

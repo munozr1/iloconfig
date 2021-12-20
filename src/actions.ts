@@ -218,4 +218,28 @@ export class Server {
 				console.log("ERR check if certificate is valid (most common)", err);
 			});
 	}
+	async changeIp() {
+		return await axios
+			.post(
+				`${this.config.ip}rest/v1/Managers/1/EthernetInterfaces/`,
+				{
+					Oem: {
+						Hp: {
+							HostName: this.config.new_hostname,
+						},
+					},
+				},
+				{
+					headers: {
+						// "x-auth-token": this.config.token,
+					},
+				}
+			)
+			.then((resp) => {
+				console.log("RESP", resp);
+			})
+			.catch((err) => {
+				console.log("ERR check if certificate is valid (most common)", err);
+			});
+	}
 }
