@@ -1,5 +1,6 @@
 //import fs
 import { promises as fs } from "fs";
+import { exit } from "process";
 import { CONFIG } from "./interfaces";
 // const util = require("util");
 
@@ -79,37 +80,48 @@ export function pretty(obj: any) {
 	return JSON.stringify(obj, null, 2);
 }
 
-export function validateConfig(config: CONFIG[]) {
+export function validateConfig(configs: CONFIG[]) {
+	let properties = {
+		ip: false,
+		dusername: "dpassword",
+		dpassword: "dusername",
+		nusername: "npassword",
+		npassword: "nusername",
+		role: "new_username",
+		hostname: false,
+		static_ip: "dhcp",
+		dhcp: false,
+	};
 	let errors: string[] = [];
 	let ipList: string[] = [];
-	for (let i = 0; i < config.length; i++) {
-		if (!config[i].ip) {
+	let inputHeaders: any = Object.keys(configs);
+	configs.forEach((config, i: number) => {
+		if (!config.ip) {
 			errors.push("IP is required");
-		} else if (!validIp(config[i].ip)) {
+		} else if (!validIp(config.ip)) {
 			errors.push("IP is invalid");
-		} else if (ipList.includes(config[i].ip)) {
-			errors.push("Duplicate IP", config[i].ip);
+		} else if (ipList.includes(config.ip)) {
+			errors.push("Duplicate IP", config.ip);
 		} else {
-			ipList.push(config[i].ip);
+			ipList.push(config.ip);
 		}
-		if (!config[i].default_username) {
-			errors.push("Default Username is required");
-		}
-		if (!config[i].default_password) {
-			errors.push("Default Password is required");
-		}
-		if (config[i].new_username && !config[i].new_password) {
-			errors.push("New Username is set but no password");
-		}
-		if (config[i].new_password && !config[i].new_username) {
-			errors.push("New Password is set but no username");
-		}
+		// validate dependencies
+		inputHeaders.forEach((header) => {
+			if (!validDP(config[header], inputHeaders, properties)) {
+				errors.push("Missing property: " + header);
+			}
+		});
 		if (errors.length > 0) {
-			throw new Error(errors.join("\n"));
-		}
-	}
+			console.log(`SERVER ${i + 1} INVALID: `, errors);
 
-	return config;
+			exit(1);
+		} else {
+			console.log(`SERVER ${i + 1} VALID`);
+		}
+		i++;
+	});
+
+	return configs;
 }
 
 function validIp(ip: string) {
@@ -119,4 +131,9 @@ function validIp(ip: string) {
 		if (parseInt(parts[i]) < 0 || parseInt(parts[i]) > 255) return false;
 	}
 	return true;
+}
+export function validDP(prop: string, input: string[], properties: any) {
+	if (!properties[prop]) return true;
+	if (input.includes(properties[prop])) return true;
+	return false;
 }

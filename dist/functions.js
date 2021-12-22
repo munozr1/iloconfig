@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateConfig = exports.pretty = exports.setHeaders = exports.pushHeaders = exports.parseCSV = void 0;
+exports.validDP = exports.validateConfig = exports.pretty = exports.setHeaders = exports.pushHeaders = exports.parseCSV = void 0;
 const tslib_1 = require("tslib");
 //import fs
 const fs_1 = require("fs");
+const process_1 = require("process");
 // const util = require("util");
 /**
  *
@@ -83,39 +84,50 @@ function pretty(obj) {
     return JSON.stringify(obj, null, 2);
 }
 exports.pretty = pretty;
-function validateConfig(config) {
+function validateConfig(configs) {
+    let properties = {
+        ip: false,
+        dusername: "dpassword",
+        dpassword: "dusername",
+        nusername: "npassword",
+        npassword: "nusername",
+        role: "new_username",
+        hostname: false,
+        static_ip: "dhcp",
+        dhcp: false,
+    };
     let errors = [];
     let ipList = [];
-    for (let i = 0; i < config.length; i++) {
-        if (!config[i].ip) {
+    let inputHeaders = Object.keys(configs);
+    configs.forEach((config, i) => {
+        if (!config.ip) {
             errors.push("IP is required");
         }
-        else if (!validIp(config[i].ip)) {
+        else if (!validIp(config.ip)) {
             errors.push("IP is invalid");
         }
-        else if (ipList.includes(config[i].ip)) {
-            errors.push("Duplicate IP", config[i].ip);
+        else if (ipList.includes(config.ip)) {
+            errors.push("Duplicate IP", config.ip);
         }
         else {
-            ipList.push(config[i].ip);
+            ipList.push(config.ip);
         }
-        if (!config[i].default_username) {
-            errors.push("Default Username is required");
-        }
-        if (!config[i].default_password) {
-            errors.push("Default Password is required");
-        }
-        if (config[i].new_username && !config[i].new_password) {
-            errors.push("New Username is set but no password");
-        }
-        if (config[i].new_password && !config[i].new_username) {
-            errors.push("New Password is set but no username");
-        }
+        // validate dependencies
+        inputHeaders.forEach((header) => {
+            if (!validDP(config[header], inputHeaders, properties)) {
+                errors.push("Missing property: " + header);
+            }
+        });
         if (errors.length > 0) {
-            throw new Error(errors.join("\n"));
+            console.log(`SERVER ${i + 1} INVALID: `, errors);
+            (0, process_1.exit)(1);
         }
-    }
-    return config;
+        else {
+            console.log(`SERVER ${i + 1} VALID`);
+        }
+        i++;
+    });
+    return configs;
 }
 exports.validateConfig = validateConfig;
 function validIp(ip) {
@@ -128,4 +140,12 @@ function validIp(ip) {
     }
     return true;
 }
+function validDP(prop, input, properties) {
+    if (!properties[prop])
+        return true;
+    if (input.includes(properties[prop]))
+        return true;
+    return false;
+}
+exports.validDP = validDP;
 //# sourceMappingURL=functions.js.map

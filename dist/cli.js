@@ -2,7 +2,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const actions_1 = require("./actions");
+// import { Server } from "./actions";
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 const functions_1 = require("./functions");
 function main() {
@@ -69,27 +69,27 @@ function test(file) {
     // 	token: "af8dfc21532048003c37e2982d6df0ab",
     // };
     (0, functions_1.validateConfig)(file);
-    file.forEach((config) => {
-        let server = new actions_1.Server(config);
-        if (config.ip && config.default_username && config.default_password) {
-            server.login();
-        }
-        if (config.new_username && config.new_password && config.role) {
-            server.createUser();
-        }
-        if (config.new_hostname) {
-            server.changeHostname();
-        }
-        if (config.license) {
-            server.setLicense();
-        }
-        if (config.dhcp) {
-            server.changeDHCP();
-        }
-        if (config.static_ip) {
-            server.changeIp();
-        }
-    });
+    // file.forEach((config) => {
+    // 	let server = new Server(config);
+    // 	if (config.ip && config.default_username && config.default_password) {
+    // 		server.login();
+    // 	}
+    // 	if (config.new_username && config.new_password && config.role) {
+    // 		server.createUser();
+    // 	}
+    // 	if (config.new_hostname) {
+    // 		server.changeHostname();
+    // 	}
+    // 	if (config.license) {
+    // 		server.setLicense();
+    // 	}
+    // 	if (config.dhcp) {
+    // 		server.changeDHCP();
+    // 	}
+    // 	if (config.static_ip) {
+    // 		server.changeIp();
+    // 	}
+    // });
     //  server.logout();
     // server.login();
     //  server.logout();
