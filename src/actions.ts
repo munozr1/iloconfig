@@ -23,6 +23,7 @@ export class Server {
 	 * @returns 200 if the server is reachable.
 	 */
 	async testConnection() {
+		// WORKING
 		// const data = JSON.stringify({});
 		const methodInfo = {
 			method: "get",
@@ -52,6 +53,7 @@ export class Server {
 	 *          - location : the location url to logout
 	 */
 	async login() {
+		// WORKING
 		const data = JSON.stringify({
 			UserName: this.config.default_username,
 			Password: this.config.default_password,
@@ -114,6 +116,7 @@ export class Server {
 	 * @returns returns whether the user was created or not
 	 */
 	async createUser() {
+		// WORKING
 		const data = JSON.stringify({
 			UserName: this.config.new_username,
 			Password: this.config.new_password,
@@ -169,6 +172,7 @@ export class Server {
 
 	//"Oem/Hp/DHCPv4/Enabled" : EthernetInterfaces
 	async changeDHCP() {
+		// WORKING
 		let data = JSON.stringify({
 			DHCPv4: {
 				DHCPEnabled: this.config.dhcp,
@@ -195,6 +199,7 @@ export class Server {
 
 	///rest/v1/Managers/{item}/EthernetInterfaces/{item}
 	async changeHostname() {
+		// NOT WORKING
 		return await axios
 			.post(
 				`${this.config.ip}rest/v1/Managers/1/EthernetInterfaces/`,
