@@ -1,5 +1,7 @@
 ![HPE logo](./hpe_logo/hpe-logo.svg)
 
+#### Not an official HPE product.
+
 # iLO Configuration Tool for HPE servers running iLO 5
 
 ## Introduction
