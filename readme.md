@@ -6,7 +6,7 @@
 
 ## Introduction
 
-iLO is a command line interface for managing HPE servers. The following are the current actions you can automate using the iLO configuration tool.
+iloconfig is a command line interface for managing HPE servers. The following are the current actions you can automate using the iLO configuration tool.
 
 - Create new users
 - Change user password
