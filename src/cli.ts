@@ -1,48 +1,44 @@
 #! /usr/bin/env node
 import { CONFIG } from "./interfaces";
 // import { Server } from "./actions";
-
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-
 import { parseCSV, validateConfig } from "./functions";
+const readline = require("readline");
 
 async function main() {
-	const readline = require("readline");
-	const yargs = require("yargs");
 	const usage = "usage: ilo <-f> <file>  ";
-	// @ts-ignore
-	const _options = yargs
-		.usage(usage)
-		.options({
-			f: {
-				alias: "fileconfig",
-				describe:
-					"file containing: csv file with the following columns: ip, default_username, default_password, new_username, new_password, role, new_hostname, static_ip, license, dhcp",
-				type: "string",
-				demand: true,
-			},
-		})
-		.help(true).argv;
 	let filename: string = "";
+	// parsed data from csv file
 	let file: CONFIG[] = [];
+	// arguments passed in by user
 	let argv: string[] = process.argv.slice(2);
+
+	//identify and validate the arguments passed in
 	while (argv.length) {
 		if (argv[0] === "-f") {
 			filename = argv[1];
 			argv.splice(0, 2);
 			await parseCSV(filename).then((data) => {
 				file = data;
+				// console.log("file: ", file);
+
 				// file.pop();
 			});
 		} else {
 			console.log("Invalid argument");
+			console.log(usage);
+
 			process.exit(1);
 		}
 	}
+
+	// take in user input
 	const userConfimation = readline.createInterface({
 		input: process.stdin,
 		output: process.stdout,
 	});
+
+	//once the user confirms the config file, run the test function
 	await userConfimation.question(
 		`Modify ${file.length} servers? (y/n)`,
 		(resp) => {

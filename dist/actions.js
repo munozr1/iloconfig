@@ -24,6 +24,7 @@ class Server {
      */
     testConnection() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+            // WORKING
             // const data = JSON.stringify({});
             const methodInfo = {
                 method: "get",
@@ -55,6 +56,7 @@ class Server {
      */
     login() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+            // WORKING
             const data = JSON.stringify({
                 UserName: this.config.default_username,
                 Password: this.config.default_password,
@@ -117,6 +119,7 @@ class Server {
      */
     createUser() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+            // WORKING
             const data = JSON.stringify({
                 UserName: this.config.new_username,
                 Password: this.config.new_password,
@@ -170,6 +173,7 @@ class Server {
     //"Oem/Hp/DHCPv4/Enabled" : EthernetInterfaces
     changeDHCP() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+            // WORKING
             let data = JSON.stringify({
                 DHCPv4: {
                     DHCPEnabled: this.config.dhcp,
@@ -197,6 +201,7 @@ class Server {
     ///rest/v1/Managers/{item}/EthernetInterfaces/{item}
     changeHostname() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+            // NOT WORKING
             return yield axios_1.default
                 .post(`${this.config.ip}rest/v1/Managers/1/EthernetInterfaces/`, {
                 Oem: {

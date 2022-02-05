@@ -33,4 +33,3 @@ export declare function pushHeaders(output: string[], input: string[]): string[]
 export declare function setHeaders(input: string[], output: any): void;
 export declare function pretty(obj: any): string;
 export declare function validateConfig(configs: CONFIG[]): CONFIG[];
-export declare function validDP(prop: string, input: string[], properties: any): boolean;
