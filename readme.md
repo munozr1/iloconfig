@@ -1,4 +1,4 @@
-![HPE logo](https://design-system.hpe.design/static/images/hpe-logo.svg)
+![HPE logo](./hpe_logo/hpe-logo.svg)
 
 # iLO Configuration Tool for HPE servers running iLO 5
 
