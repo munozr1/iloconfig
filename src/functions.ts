@@ -57,74 +57,29 @@ export async function parseCSV(filename: string): Promise<CONFIG[]> {
 	return result;
 }
 
-export function pushHeaders(output: string[], input: string[]) {
-	console.log("got to push function");
-	console.log("output: ", output);
-	console.log("input: ", input.length);
-	let i;
-	for (i = 0; i < input.length && !input[i].includes("-"); i++) {
-		output.push(input[i]);
-		console.log("push function iteration", i);
-	}
-	input.splice(0, i);
-	return output;
-}
-
-export function setHeaders(input: string[], output: any) {
-	input.forEach((item) => {
-		output[item] = true;
-	});
-}
-
 export function pretty(obj: any) {
 	return JSON.stringify(obj, null, 2);
 }
 
 export function validateConfig(configs: CONFIG[]) {
-	// list of possible headers in the config file
-	let validProperties = [
-		"ip",
-		"default_username",
-		"default_password",
-		"new_username",
-		"new_password",
-		"role",
-		"dhcp",
-		"new_hostname",
-	];
-	let errors: string[] = [];
-	// used to keep track of which ip addresses have been used already to avoid duplicate work
-	let ipList: string[] = [];
-	//headers given by the user in the config file
+	let localErrors: string[] = [];
+	let usedIpAddresses: string[] = [];
 	let inputHeaders: string[] = Object.keys(configs[0]);
-	//remove the first index of the array which is the headers
 	inputHeaders.shift();
+	configs.pop();
 	configs.forEach((config, i: number) => {
 		//validate the ip address
 		if (!config.ip) {
-			errors.push("IP is required");
+			localErrors.push("IP is required");
 		} else if (!validIp(config.ip)) {
-			errors.push("IP is invalid");
-		} else if (ipList.includes(config.ip)) {
-			errors.push("Duplicate IP", config.ip);
+			localErrors.push("IP is invalid");
+		} else if (usedIpAddresses.includes(config.ip)) {
+			localErrors.push("Duplicate IP", config.ip);
 		} else {
-			ipList.push(config.ip);
+			usedIpAddresses.push(config.ip);
 		}
 		// validate headers and check if they have a value
-		inputHeaders.forEach((header) => {
-			if (!config[header]) {
-				errors.push("Missing header: " + header);
-			} else if (
-				config[header] === undefined ||
-				config[header] === "" ||
-				config[header] === " "
-			) {
-				errors.push("Missing value for", header);
-			}
-			if (!validProperties.includes(header)) {
-				errors.push("Invalid header", header);
-			}
-		});
+		let errors = [...localErrors, ...validHeaders(inputHeaders, config)];
 
 		if (errors.length > 0) {
 			console.log(`SERVER ${i + 1} INVALID: `, errors);
@@ -137,6 +92,35 @@ export function validateConfig(configs: CONFIG[]) {
 	});
 
 	return configs;
+}
+
+function validHeaders(headers: string[], config: CONFIG): string[] {
+	let validProperties = [
+		"ip",
+		"default_username",
+		"default_password",
+		"new_username",
+		"new_password",
+		"role",
+		"dhcp",
+		"new_hostname",
+	];
+	let errors: string[] = [];
+	headers.forEach((header) => {
+		if (!config[header]) {
+			errors.push("Missing header: " + header);
+		} else if (
+			config[header] === undefined ||
+			config[header] === "" ||
+			config[header] === " "
+		) {
+			errors.push("Missing value for", header);
+		}
+		if (!validProperties.includes(header)) {
+			errors.push("Invalid header", header);
+		}
+	});
+	return errors;
 }
 
 /**

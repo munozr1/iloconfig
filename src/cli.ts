@@ -3,6 +3,7 @@ import { CONFIG } from "./interfaces";
 // import { Server } from "./actions";
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 import { parseCSV, validateConfig } from "./functions";
+import { exit } from "process";
 const readline = require("readline");
 
 async function main() {
@@ -20,9 +21,6 @@ async function main() {
 			argv.splice(0, 2);
 			await parseCSV(filename).then((data) => {
 				file = data;
-				// console.log("file: ", file);
-
-				// file.pop();
 			});
 		} else {
 			console.log("Invalid argument");
@@ -68,6 +66,7 @@ function test(file: CONFIG[]) {
 	// 	token: "af8dfc21532048003c37e2982d6df0ab",
 	// };
 	validateConfig(file);
+	exit(0);
 	// file.forEach((config) => {
 	// 	let server = new Server(config);
 	// 	if (config.ip && config.default_username && config.default_password) {

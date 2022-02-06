@@ -5,6 +5,7 @@ const tslib_1 = require("tslib");
 // import { Server } from "./actions";
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 const functions_1 = require("./functions");
+const process_1 = require("process");
 const readline = require("readline");
 function main() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
@@ -21,8 +22,6 @@ function main() {
                 argv.splice(0, 2);
                 yield (0, functions_1.parseCSV)(filename).then((data) => {
                     file = data;
-                    // console.log("file: ", file);
-                    // file.pop();
                 });
             }
             else {
@@ -63,6 +62,7 @@ function test(file) {
     // 	token: "af8dfc21532048003c37e2982d6df0ab",
     // };
     (0, functions_1.validateConfig)(file);
+    (0, process_1.exit)(0);
     // file.forEach((config) => {
     // 	let server = new Server(config);
     // 	if (config.ip && config.default_username && config.default_password) {

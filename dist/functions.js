@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateConfig = exports.pretty = exports.setHeaders = exports.pushHeaders = exports.parseCSV = void 0;
+exports.validateConfig = exports.pretty = exports.parseCSV = void 0;
 const tslib_1 = require("tslib");
 //import fs
 const fs_1 = require("fs");
@@ -61,76 +61,32 @@ function parseCSV(filename) {
     });
 }
 exports.parseCSV = parseCSV;
-function pushHeaders(output, input) {
-    console.log("got to push function");
-    console.log("output: ", output);
-    console.log("input: ", input.length);
-    let i;
-    for (i = 0; i < input.length && !input[i].includes("-"); i++) {
-        output.push(input[i]);
-        console.log("push function iteration", i);
-    }
-    input.splice(0, i);
-    return output;
-}
-exports.pushHeaders = pushHeaders;
-function setHeaders(input, output) {
-    input.forEach((item) => {
-        output[item] = true;
-    });
-}
-exports.setHeaders = setHeaders;
 function pretty(obj) {
     return JSON.stringify(obj, null, 2);
 }
 exports.pretty = pretty;
 function validateConfig(configs) {
-    // list of possible headers in the config file
-    let validProperties = [
-        "ip",
-        "default_username",
-        "default_password",
-        "new_username",
-        "new_password",
-        "role",
-        "dhcp",
-        "new_hostname",
-    ];
-    let errors = [];
-    // used to keep track of which ip addresses have been used already to avoid duplicate work
-    let ipList = [];
-    //headers given by the user in the config file
+    let localErrors = [];
+    let usedIpAddresses = [];
     let inputHeaders = Object.keys(configs[0]);
-    //remove the first index of the array which is the headers
     inputHeaders.shift();
+    configs.pop();
     configs.forEach((config, i) => {
         //validate the ip address
         if (!config.ip) {
-            errors.push("IP is required");
+            localErrors.push("IP is required");
         }
         else if (!validIp(config.ip)) {
-            errors.push("IP is invalid");
+            localErrors.push("IP is invalid");
         }
-        else if (ipList.includes(config.ip)) {
-            errors.push("Duplicate IP", config.ip);
+        else if (usedIpAddresses.includes(config.ip)) {
+            localErrors.push("Duplicate IP", config.ip);
         }
         else {
-            ipList.push(config.ip);
+            usedIpAddresses.push(config.ip);
         }
         // validate headers and check if they have a value
-        inputHeaders.forEach((header) => {
-            if (!config[header]) {
-                errors.push("Missing header: " + header);
-            }
-            else if (config[header] === undefined ||
-                config[header] === "" ||
-                config[header] === " ") {
-                errors.push("Missing value for", header);
-            }
-            if (!validProperties.includes(header)) {
-                errors.push("Invalid header", header);
-            }
-        });
+        let errors = [...localErrors, ...validHeaders(inputHeaders, config)];
         if (errors.length > 0) {
             console.log(`SERVER ${i + 1} INVALID: `, errors);
             (0, process_1.exit)(1);
@@ -143,6 +99,33 @@ function validateConfig(configs) {
     return configs;
 }
 exports.validateConfig = validateConfig;
+function validHeaders(headers, config) {
+    let validProperties = [
+        "ip",
+        "default_username",
+        "default_password",
+        "new_username",
+        "new_password",
+        "role",
+        "dhcp",
+        "new_hostname",
+    ];
+    let errors = [];
+    headers.forEach((header) => {
+        if (!config[header]) {
+            errors.push("Missing header: " + header);
+        }
+        else if (config[header] === undefined ||
+            config[header] === "" ||
+            config[header] === " ") {
+            errors.push("Missing value for", header);
+        }
+        if (!validProperties.includes(header)) {
+            errors.push("Invalid header", header);
+        }
+    });
+    return errors;
+}
 /**
  *
  * @param ip The ip address to validate
