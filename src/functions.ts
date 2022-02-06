@@ -1,6 +1,7 @@
 //import fs
 import { promises as fs } from "fs";
 import { exit } from "process";
+import { ErrorMessages, iLOError } from "./errors";
 import { CONFIG } from "./interfaces";
 // const util = require("util");
 
@@ -135,4 +136,38 @@ function validIp(ip: string) {
 		if (parseInt(parts[i]) < 0 || parseInt(parts[i]) > 255) return false;
 	}
 	return true;
+}
+
+/**
+ *
+ * @param args Array of strings (arguments passed in by the user)
+ * @returns returns the string that contains the flags if passed in, else it returns an empty string
+ */
+export function validateArgs(args: string[]) {
+	let flags: string = "";
+	args.forEach((arg) => {
+		if (arg.includes("-")) flags = arg;
+	});
+	return flags;
+}
+
+/**
+ *
+ * @param inputFlags string containg the flags inputted by the user
+ * @returns returns an invalid flag if found or and empty string
+ */
+export function validateFlags(inputFlags: string): boolean | iLOError {
+	let invalidFlag!: iLOError;
+	const flags = ["f", "l", "u", "h", "c", "d", "-"];
+	for (let i = 0; i < inputFlags.length; i++) {
+		if (!flags.includes(inputFlags[i])) {
+			invalidFlag = {
+				message: ErrorMessages.InvalidFlags,
+				resolution: `remove invalid flag: ${inputFlags[i]}`,
+			};
+		}
+	}
+
+	if (!invalidFlag) return true;
+	return invalidFlag;
 }

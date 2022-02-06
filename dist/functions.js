@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateConfig = exports.pretty = exports.parseCSV = void 0;
+exports.validateFlags = exports.validateArgs = exports.validateConfig = exports.pretty = exports.parseCSV = void 0;
 const tslib_1 = require("tslib");
 //import fs
 const fs_1 = require("fs");
@@ -141,4 +141,39 @@ function validIp(ip) {
     }
     return true;
 }
+/**
+ *
+ * @param args Array of strings (arguments passed in by the user)
+ * @returns returns the string that contains the flags if passed in, else it returns an empty string
+ */
+function validateArgs(args) {
+    let flags = "";
+    args.forEach((arg) => {
+        if (arg.includes("-"))
+            flags = arg;
+    });
+    return flags;
+}
+exports.validateArgs = validateArgs;
+/**
+ *
+ * @param inputFlags string containg the flags inputted by the user
+ * @returns returns an invalid flag if found or and empty string
+ */
+function validateFlags(inputFlags) {
+    let invalidFlag;
+    const flags = ["f", "l", "u", "h", "c", "d", "-"];
+    for (let i = 0; i < inputFlags.length; i++) {
+        if (!flags.includes(inputFlags[i])) {
+            invalidFlag = {
+                message: "Error: invalid flag" /* InvalidFlags */,
+                resolution: `remove invalid flag: ${inputFlags[i]}`,
+            };
+        }
+    }
+    if (!invalidFlag)
+        return true;
+    return invalidFlag;
+}
+exports.validateFlags = validateFlags;
 //# sourceMappingURL=functions.js.map

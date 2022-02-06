@@ -2,21 +2,47 @@
 import { CONFIG } from "./interfaces";
 // import { Server } from "./actions";
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-import { parseCSV, validateConfig } from "./functions";
+import { parseCSV, validateConfig, validateFlags } from "./functions";
 import { exit } from "process";
+import { checkError, ErrorMessages } from "./errors";
 const readline = require("readline");
 
 async function main() {
 	const usage = "usage: ilo <-f> <file>  ";
+
 	let filename: string = "";
 	// parsed data from csv file
 	let file: CONFIG[] = [];
 	// arguments passed in by user
 	let argv: string[] = process.argv.slice(2);
+	// let inputFlags = validateArgs(argv);
+	let inputFlags = validateFlags(argv[0]);
 
 	//identify and validate the arguments passed in
+	// eventually i will implement other arguments
+	// -f <file> always required
+	// -l <log in> assumed by default
+	// -u <update> update to latest firmware
+	// -h <hostname> create a new hostname
+	// -c <create user> create a new user
+	// -d <DHCP> turn dhcp on or off
+	// a command may look like the following
+	// ilo -fluhcd <file>
+	//
+
+	// if (inputFlags === "") throw new Error("No flags provided");
+	if (checkError(inputFlags)) {
+		if (
+			inputFlags.message === ErrorMessages.InvalidFlags ||
+			inputFlags.message === ErrorMessages.MissingFlags
+		) {
+			console.log(inputFlags);
+			exit(1);
+		}
+	}
+
 	while (argv.length) {
-		if (argv[0] === "-f") {
+		if (argv[0].includes("f")) {
 			filename = argv[1];
 			argv.splice(0, 2);
 			await parseCSV(filename).then((data) => {

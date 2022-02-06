@@ -1,3 +1,4 @@
+import { iLOError } from "./errors";
 import { CONFIG } from "./interfaces";
 /**
  *
@@ -31,3 +32,15 @@ DATA [
 export declare function parseCSV(filename: string): Promise<CONFIG[]>;
 export declare function pretty(obj: any): string;
 export declare function validateConfig(configs: CONFIG[]): CONFIG[];
+/**
+ *
+ * @param args Array of strings (arguments passed in by the user)
+ * @returns returns the string that contains the flags if passed in, else it returns an empty string
+ */
+export declare function validateArgs(args: string[]): string;
+/**
+ *
+ * @param inputFlags string containg the flags inputted by the user
+ * @returns returns an invalid flag if found or and empty string
+ */
+export declare function validateFlags(inputFlags: string): boolean | iLOError;
