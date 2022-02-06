@@ -53,42 +53,6 @@ async function main() {
 main();
 
 function test(file: CONFIG[]) {
-	// let config: CONFIG = {
-	// 	ip: "192.168.3.125",
-	// 	default_username: "Administrator",
-	// 	default_password: "NP26K567",
-	// 	new_username: "secondTestUser",
-	// 	new_password: "password123",
-	// 	role: "Administrator",
-	// 	new_hostname: "firstTestHost",
-	// 	location:
-	// 		"https://192.168.3.125/redfish/v1/SessionService/Sessions/administrator0000000000000f2b15810625/",
-	// 	token: "af8dfc21532048003c37e2982d6df0ab",
-	// };
 	validateConfig(file);
 	exit(0);
-	// file.forEach((config) => {
-	// 	let server = new Server(config);
-	// 	if (config.ip && config.default_username && config.default_password) {
-	// 		server.login();
-	// 	}
-	// 	if (config.new_username && config.new_password && config.role) {
-	// 		server.createUser();
-	// 	}
-	// 	if (config.new_hostname) {
-	// 		server.changeHostname();
-	// 	}
-	// 	if (config.license) {
-	// 		server.setLicense();
-	// 	}
-	// 	if (config.dhcp) {
-	// 		server.changeDHCP();
-	// 	}
-	// 	if (config.static_ip) {
-	// 		server.changeIp();
-	// 	}
-	// });
-	//  server.logout();
-	// server.login();
-	//  server.logout();
 }
