@@ -11,7 +11,7 @@ iloconfig is a command line interface for managing HPE servers. The following ar
 - [x] Create new users
 - [x] Change user password
 - [x] Turn on/off DHCP
-- [ ]Change user privileges
+- [o]Change user privileges
 - [ ]Set custom hostname
 - [ ]Set custom ip address
 
