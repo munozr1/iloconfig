@@ -5,7 +5,11 @@ export declare type iLOError = {
 export declare const enum ErrorMessages {
     MissingFlags = "Error: missing flags.",
     MissingArgs = "Error: missing an argument in the initial ilo command",
-    InvalidFlags = "Error: invalid flag"
+    InvalidFlags = "Error: invalid flag",
+    MissingServerFile = "Error: missing file or not a csv file",
+    InvalidFile = "Error: could not find or open csv file",
+    TooManyFiles = "Error: too many csv files passed in",
+    TooManyFlagArguments = "Error: too many flag arguments have been passed in"
 }
 /**
  *

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateFlags = exports.validateArgs = exports.validateConfig = exports.pretty = exports.parseCSV = void 0;
+exports.validateFlags = exports.validateFile = exports.validateConfig = exports.pretty = exports.parseCSV = void 0;
 const tslib_1 = require("tslib");
 //import fs
 const fs_1 = require("fs");
@@ -144,36 +144,63 @@ function validIp(ip) {
 /**
  *
  * @param args Array of strings (arguments passed in by the user)
- * @returns returns the string that contains the flags if passed in, else it returns an empty string
+ * @returns returns the string that contains the flags if passed in, else it returns an iLOError
  */
-function validateArgs(args) {
-    let flags = "";
+function validateFile(args) {
+    let filename = "";
+    let count = 0;
     args.forEach((arg) => {
-        if (arg.includes("-"))
-            flags = arg;
+        if (arg.includes(".csv")) {
+            filename = arg;
+            count++;
+        }
     });
-    return flags;
+    if (count < 1)
+        return {
+            message: "Error: missing file or not a csv file" /* MissingServerFile */,
+            resolution: "include csv file with server configuration options",
+        };
+    else if (count > 1)
+        return {
+            message: "Error: too many csv files passed in" /* TooManyFiles */,
+            resolution: "only include 1 csv file",
+        };
+    return filename;
 }
-exports.validateArgs = validateArgs;
+exports.validateFile = validateFile;
 /**
  *
  * @param inputFlags string containg the flags inputted by the user
- * @returns returns an invalid flag if found or and empty string
+ * @returns returns a string containing the flag arguments or an iLOError
  */
-function validateFlags(inputFlags) {
+function validateFlags(args) {
     let invalidFlag;
+    let index = 0;
+    let count = 0;
     const flags = ["f", "l", "u", "h", "c", "d", "-"];
-    for (let i = 0; i < inputFlags.length; i++) {
-        if (!flags.includes(inputFlags[i])) {
-            invalidFlag = {
-                message: "Error: invalid flag" /* InvalidFlags */,
-                resolution: `remove invalid flag: ${inputFlags[i]}`,
-            };
+    args.forEach((arg) => {
+        if (arg.includes("-") && count < 1) {
+            count++;
+            for (let i = 0; i < arg.length; i++) {
+                if (!flags.includes(arg[i])) {
+                    invalidFlag = {
+                        message: "Error: invalid flag" /* InvalidFlags */,
+                        resolution: `remove the ${arg[i]} flag`,
+                    };
+                }
+                else
+                    index = i;
+            }
         }
-    }
-    if (!invalidFlag)
-        return true;
-    return invalidFlag;
+    });
+    if (count > 1)
+        return {
+            message: "Error: too many flag arguments have been passed in" /* TooManyFlagArguments */,
+            resolution: "remove a -flags arugment",
+        };
+    if (invalidFlag)
+        return invalidFlag;
+    return args[index];
 }
 exports.validateFlags = validateFlags;
 //# sourceMappingURL=functions.js.map

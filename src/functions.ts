@@ -141,33 +141,60 @@ function validIp(ip: string) {
 /**
  *
  * @param args Array of strings (arguments passed in by the user)
- * @returns returns the string that contains the flags if passed in, else it returns an empty string
+ * @returns returns the string that contains the flags if passed in, else it returns an iLOError
  */
-export function validateArgs(args: string[]) {
-	let flags: string = "";
+export function validateFile(args: string[]): string | iLOError {
+	let filename: string = "";
+	let count = 0;
 	args.forEach((arg) => {
-		if (arg.includes("-")) flags = arg;
+		if (arg.includes(".csv")) {
+			filename = arg;
+			count++;
+		}
 	});
-	return flags;
+	if (count < 1)
+		return {
+			message: ErrorMessages.MissingServerFile,
+			resolution: "include csv file with server configuration options",
+		};
+	else if (count > 1)
+		return {
+			message: ErrorMessages.TooManyFiles,
+			resolution: "only include 1 csv file",
+		};
+	return filename;
 }
 
 /**
  *
  * @param inputFlags string containg the flags inputted by the user
- * @returns returns an invalid flag if found or and empty string
+ * @returns returns a string containing the flag arguments or an iLOError
  */
-export function validateFlags(inputFlags: string): boolean | iLOError {
+export function validateFlags(args: string[]): string | iLOError {
 	let invalidFlag!: iLOError;
+	let index = 0;
+	let count = 0;
 	const flags = ["f", "l", "u", "h", "c", "d", "-"];
-	for (let i = 0; i < inputFlags.length; i++) {
-		if (!flags.includes(inputFlags[i])) {
-			invalidFlag = {
-				message: ErrorMessages.InvalidFlags,
-				resolution: `remove invalid flag: ${inputFlags[i]}`,
-			};
-		}
-	}
 
-	if (!invalidFlag) return true;
-	return invalidFlag;
+	args.forEach((arg) => {
+		if (arg.includes("-") && count < 1) {
+			count++;
+			for (let i = 0; i < arg.length; i++) {
+				if (!flags.includes(arg[i])) {
+					invalidFlag = {
+						message: ErrorMessages.InvalidFlags,
+						resolution: `remove the ${arg[i]} flag`,
+					};
+				} else index = i;
+			}
+		}
+	});
+	if (count > 1)
+		return {
+			message: ErrorMessages.TooManyFlagArguments,
+			resolution: "remove a -flags arugment",
+		};
+
+	if (invalidFlag) return invalidFlag;
+	return args[index];
 }

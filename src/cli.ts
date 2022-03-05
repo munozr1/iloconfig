@@ -2,21 +2,22 @@
 import { CONFIG } from "./interfaces";
 // import { Server } from "./actions";
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-import { parseCSV, validateConfig, validateFlags } from "./functions";
+import { validateFile, validateConfig, validateFlags } from "./functions";
 import { exit } from "process";
-import { checkError, ErrorMessages } from "./errors";
+import { checkError, ErrorMessages, iLOError } from "./errors";
 const readline = require("readline");
 
 async function main() {
-	const usage = "usage: ilo <-f> <file>  ";
+	// const usage = "usage: ilo <-f> <file>  ";
 
-	let filename: string = "";
+	let argv: string[] = process.argv.slice(2);
+	let filename: string | iLOError = validateFile(argv);
 	// parsed data from csv file
 	let file: CONFIG[] = [];
 	// arguments passed in by user
-	let argv: string[] = process.argv.slice(2);
+
 	// let inputFlags = validateArgs(argv);
-	let inputFlags = validateFlags(argv[0]);
+	let inputFlags = validateFlags(argv);
 
 	//identify and validate the arguments passed in
 	// eventually i will implement other arguments
@@ -40,21 +41,30 @@ async function main() {
 			exit(1);
 		}
 	}
-
-	while (argv.length) {
-		if (argv[0].includes("f")) {
-			filename = argv[1];
-			argv.splice(0, 2);
-			await parseCSV(filename).then((data) => {
-				file = data;
-			});
-		} else {
-			console.log("Invalid argument");
-			console.log(usage);
-
-			process.exit(1);
+	if (checkError(filename)) {
+		if (
+			filename.message === ErrorMessages.InvalidFlags ||
+			filename.message === ErrorMessages.MissingFlags
+		) {
+			console.log(inputFlags);
+			exit(1);
 		}
 	}
+
+	// while (argv.length) {
+	// 	if (argv[0].includes("f")) {
+	// 		filename = argv[1];
+	// 		argv.splice(0, 2);
+	// 		await parseCSV(filename).then((data) => {
+	// 			file = data;
+	// 		});
+	// 	} else {
+	// 		console.log("Invalid argument");
+	// 		console.log(usage);
+
+	// 		process.exit(1);
+	// 	}
+	// }
 
 	// take in user input
 	const userConfimation = readline.createInterface({

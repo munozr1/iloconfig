@@ -35,12 +35,12 @@ export declare function validateConfig(configs: CONFIG[]): CONFIG[];
 /**
  *
  * @param args Array of strings (arguments passed in by the user)
- * @returns returns the string that contains the flags if passed in, else it returns an empty string
+ * @returns returns the string that contains the flags if passed in, else it returns an iLOError
  */
-export declare function validateArgs(args: string[]): string;
+export declare function validateFile(args: string[]): string | iLOError;
 /**
  *
  * @param inputFlags string containg the flags inputted by the user
- * @returns returns an invalid flag if found or and empty string
+ * @returns returns a string containing the flag arguments or an iLOError
  */
-export declare function validateFlags(inputFlags: string): boolean | iLOError;
+export declare function validateFlags(args: string[]): string | iLOError;

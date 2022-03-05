@@ -10,14 +10,14 @@ const errors_1 = require("./errors");
 const readline = require("readline");
 function main() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        const usage = "usage: ilo <-f> <file>  ";
-        let filename = "";
+        // const usage = "usage: ilo <-f> <file>  ";
+        let argv = process.argv.slice(2);
+        let filename = (0, functions_1.validateFile)(argv);
         // parsed data from csv file
         let file = [];
         // arguments passed in by user
-        let argv = process.argv.slice(2);
         // let inputFlags = validateArgs(argv);
-        let inputFlags = (0, functions_1.validateFlags)(argv[0]);
+        let inputFlags = (0, functions_1.validateFlags)(argv);
         //identify and validate the arguments passed in
         // eventually i will implement other arguments
         // -f <file> always required
@@ -37,20 +37,26 @@ function main() {
                 (0, process_1.exit)(1);
             }
         }
-        while (argv.length) {
-            if (argv[0].includes("f")) {
-                filename = argv[1];
-                argv.splice(0, 2);
-                yield (0, functions_1.parseCSV)(filename).then((data) => {
-                    file = data;
-                });
-            }
-            else {
-                console.log("Invalid argument");
-                console.log(usage);
-                process.exit(1);
+        if ((0, errors_1.checkError)(filename)) {
+            if (filename.message === "Error: invalid flag" /* InvalidFlags */ ||
+                filename.message === "Error: missing flags." /* MissingFlags */) {
+                console.log(inputFlags);
+                (0, process_1.exit)(1);
             }
         }
+        // while (argv.length) {
+        // 	if (argv[0].includes("f")) {
+        // 		filename = argv[1];
+        // 		argv.splice(0, 2);
+        // 		await parseCSV(filename).then((data) => {
+        // 			file = data;
+        // 		});
+        // 	} else {
+        // 		console.log("Invalid argument");
+        // 		console.log(usage);
+        // 		process.exit(1);
+        // 	}
+        // }
         // take in user input
         const userConfimation = readline.createInterface({
             input: process.stdin,
