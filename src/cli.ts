@@ -4,20 +4,20 @@ import { CONFIG } from "./interfaces";
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 import { validateFile, validateConfig, validateFlags } from "./functions";
 import { exit } from "process";
-import { checkError, ErrorMessages, iLOError } from "./errors";
+import { checkError, iLOError } from "./errors";
 const readline = require("readline");
 
 async function main() {
 	// const usage = "usage: ilo <-f> <file>  ";
 
 	let argv: string[] = process.argv.slice(2);
+	let inputFlags: string | iLOError = validateFlags(argv);
 	let filename: string | iLOError = validateFile(argv);
 	// parsed data from csv file
 	let file: CONFIG[] = [];
 	// arguments passed in by user
 
 	// let inputFlags = validateArgs(argv);
-	let inputFlags = validateFlags(argv);
 
 	//identify and validate the arguments passed in
 	// eventually i will implement other arguments
@@ -33,22 +33,12 @@ async function main() {
 
 	// if (inputFlags === "") throw new Error("No flags provided");
 	if (checkError(inputFlags)) {
-		if (
-			inputFlags.message === ErrorMessages.InvalidFlags ||
-			inputFlags.message === ErrorMessages.MissingFlags
-		) {
-			console.log(inputFlags);
-			exit(1);
-		}
+		console.log(inputFlags);
+		exit(1);
 	}
 	if (checkError(filename)) {
-		if (
-			filename.message === ErrorMessages.InvalidFlags ||
-			filename.message === ErrorMessages.MissingFlags
-		) {
-			console.log(inputFlags);
-			exit(1);
-		}
+		console.log(filename);
+		exit(1);
 	}
 
 	// while (argv.length) {

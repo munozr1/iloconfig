@@ -12,12 +12,12 @@ function main() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         // const usage = "usage: ilo <-f> <file>  ";
         let argv = process.argv.slice(2);
+        let inputFlags = (0, functions_1.validateFlags)(argv);
         let filename = (0, functions_1.validateFile)(argv);
         // parsed data from csv file
         let file = [];
         // arguments passed in by user
         // let inputFlags = validateArgs(argv);
-        let inputFlags = (0, functions_1.validateFlags)(argv);
         //identify and validate the arguments passed in
         // eventually i will implement other arguments
         // -f <file> always required
@@ -31,18 +31,12 @@ function main() {
         //
         // if (inputFlags === "") throw new Error("No flags provided");
         if ((0, errors_1.checkError)(inputFlags)) {
-            if (inputFlags.message === "Error: invalid flag" /* InvalidFlags */ ||
-                inputFlags.message === "Error: missing flags." /* MissingFlags */) {
-                console.log(inputFlags);
-                (0, process_1.exit)(1);
-            }
+            console.log(inputFlags);
+            (0, process_1.exit)(1);
         }
         if ((0, errors_1.checkError)(filename)) {
-            if (filename.message === "Error: invalid flag" /* InvalidFlags */ ||
-                filename.message === "Error: missing flags." /* MissingFlags */) {
-                console.log(inputFlags);
-                (0, process_1.exit)(1);
-            }
+            console.log(filename);
+            (0, process_1.exit)(1);
         }
         // while (argv.length) {
         // 	if (argv[0].includes("f")) {

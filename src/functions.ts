@@ -177,7 +177,7 @@ export function validateFlags(args: string[]): string | iLOError {
 	const flags = ["f", "l", "u", "h", "c", "d", "-"];
 
 	args.forEach((arg) => {
-		if (arg.includes("-") && count < 1) {
+		if (arg.includes("-")) {
 			count++;
 			for (let i = 0; i < arg.length; i++) {
 				if (!flags.includes(arg[i])) {
