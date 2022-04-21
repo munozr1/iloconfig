@@ -108,7 +108,7 @@ export class Server {
 
 	/**
 	 *
-	 * @param {string1} ip
+	 * @param {string} ip
 	 * @param {string} username
 	 * @param {string} password
 	 * @param {string} role

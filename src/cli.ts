@@ -2,13 +2,18 @@
 import { CONFIG } from "./interfaces";
 // import { Server } from "./actions";
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-import { validateFile, validateConfig, validateFlags } from "./functions";
+import {
+	validateFile,
+	validateConfig,
+	validateFlags,
+	parseCSV,
+} from "./functions";
 import { exit } from "process";
 import { checkError, iLOError } from "./errors";
 const readline = require("readline");
 
 async function main() {
-	// const usage = "usage: ilo <-f> <file>  ";
+	const usage = "usage: ilo <-f> <file>  ";
 
 	let argv: string[] = process.argv.slice(2);
 	let inputFlags: string | iLOError = validateFlags(argv);
@@ -41,20 +46,18 @@ async function main() {
 		exit(1);
 	}
 
-	// while (argv.length) {
-	// 	if (argv[0].includes("f")) {
-	// 		filename = argv[1];
-	// 		argv.splice(0, 2);
-	// 		await parseCSV(filename).then((data) => {
-	// 			file = data;
-	// 		});
-	// 	} else {
-	// 		console.log("Invalid argument");
-	// 		console.log(usage);
+	while (argv.length) {
+		if (argv[0].includes("f")) {
+			filename = argv[1];
+			argv.splice(0, 2);
+			file = await parseCSV(filename);
+		} else {
+			console.log("Invalid argument");
+			console.log(usage);
 
-	// 		process.exit(1);
-	// 	}
-	// }
+			process.exit(1);
+		}
+	}
 
 	// take in user input
 	const userConfimation = readline.createInterface({

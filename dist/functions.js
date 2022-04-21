@@ -36,7 +36,7 @@ DATA [
   ]
  */
 function parseCSV(filename) {
-    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+    return tslib_1.__awaiter(this, void 0, void 0, function* () {
         console.log("Parsing CSV file: " + filename);
         let result = [];
         let path = process.cwd();
@@ -45,18 +45,20 @@ function parseCSV(filename) {
             .readFile(path + "/" + filename, "binary")
             .catch((err) => console.log(err.messages)));
         // Parse contents
-        let lines = data.split("\n");
-        let headers = lines[0].split(",");
-        for (let i = 0; i < lines.length; i++) {
-            let obj = {};
-            let currentline = lines[i].split(",");
-            for (var j = 0; j < headers.length; j++) {
-                obj[headers[j]] = currentline[j];
+        if (data) {
+            let lines = data.split("\n");
+            let headers = lines[0].split(",");
+            for (let i = 0; i < lines.length; i++) {
+                let obj = {};
+                let currentline = lines[i].split(",");
+                for (var j = 0; j < headers.length; j++) {
+                    obj[headers[j]] = currentline[j];
+                }
+                result.push(obj);
             }
-            result.push(obj);
+            console.log("result", result);
+            result.shift();
         }
-        console.log("result", result);
-        result.shift();
         return result;
     });
 }

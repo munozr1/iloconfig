@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Server = void 0;
 const tslib_1 = require("tslib");
-const https_1 = (0, tslib_1.__importDefault)(require("https"));
-const axios_1 = (0, tslib_1.__importDefault)(require("axios"));
+const https_1 = tslib_1.__importDefault(require("https"));
+const axios_1 = tslib_1.__importDefault(require("axios"));
 const functions_1 = require("./functions");
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 /**
@@ -23,7 +23,7 @@ class Server {
      * @returns 200 if the server is reachable.
      */
     testConnection() {
-        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             // WORKING
             // const data = JSON.stringify({});
             const methodInfo = {
@@ -55,7 +55,7 @@ class Server {
      *          - location : the location url to logout
      */
     login() {
-        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             // WORKING
             const data = JSON.stringify({
                 UserName: this.config.default_username,
@@ -90,7 +90,7 @@ class Server {
      * @returns Ends the session
      */
     logout() {
-        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const methodInfo = {
                 method: "delete",
                 url: `${this.config.location}`,
@@ -110,7 +110,7 @@ class Server {
     }
     /**
      *
-     * @param {string1} ip
+     * @param {string} ip
      * @param {string} username
      * @param {string} password
      * @param {string} role
@@ -118,7 +118,7 @@ class Server {
      * @returns returns whether the user was created or not
      */
     createUser() {
-        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             // WORKING
             const data = JSON.stringify({
                 UserName: this.config.new_username,
@@ -152,7 +152,7 @@ class Server {
      * @returns returns wheter the license was added or not
      */
     setLicense() {
-        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield axios_1.default
                 .post(`${this.config.ip}/redfish/v1/Managers/1/LicenseService/`, {
                 LicenseKey: this.config.license,
@@ -172,7 +172,7 @@ class Server {
     }
     //"Oem/Hp/DHCPv4/Enabled" : EthernetInterfaces
     changeDHCP() {
-        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             // WORKING
             let data = JSON.stringify({
                 DHCPv4: {
@@ -200,7 +200,7 @@ class Server {
     }
     ///rest/v1/Managers/{item}/EthernetInterfaces/{item}
     changeHostname() {
-        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             // NOT WORKING
             return yield axios_1.default
                 .post(`${this.config.ip}rest/v1/Managers/1/EthernetInterfaces/`, {
@@ -223,7 +223,7 @@ class Server {
         });
     }
     changeIp() {
-        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield axios_1.default
                 .post(`${this.config.ip}rest/v1/Managers/1/EthernetInterfaces/`, {
                 Oem: {

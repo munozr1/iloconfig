@@ -7,8 +7,7 @@ exports.checkError = void 0;
  * @returns true if error is of type iLOError, false if return type is not of iLOError
  */
 function checkError(err) {
-    var _a;
-    return !!((_a = err) === null || _a === void 0 ? void 0 : _a.message);
+    return !!(err === null || err === void 0 ? void 0 : err.message);
 }
 exports.checkError = checkError;
 //# sourceMappingURL=errors.js.map

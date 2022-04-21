@@ -36,25 +36,27 @@ DATA [
  */
 export async function parseCSV(filename: string): Promise<CONFIG[]> {
 	console.log("Parsing CSV file: " + filename);
-	let result: CONFIG[] = [];
+	let result: CONFIG[] | undefined = [];
 	let path = process.cwd();
 	// read file
 	const data: string = (await fs
 		.readFile(path + "/" + filename, "binary")
 		.catch((err) => console.log(err.messages))) as any;
 	// Parse contents
-	let lines = data.split("\n");
-	let headers: string[] = lines[0].split(",");
-	for (let i = 0; i < lines.length; i++) {
-		let obj: any = {};
-		let currentline = lines[i].split(",");
-		for (var j = 0; j < headers.length; j++) {
-			obj[headers[j]] = currentline[j];
+	if (data) {
+		let lines = data.split("\n");
+		let headers: string[] = lines[0].split(",");
+		for (let i = 0; i < lines.length; i++) {
+			let obj: any = {};
+			let currentline = lines[i].split(",");
+			for (var j = 0; j < headers.length; j++) {
+				obj[headers[j]] = currentline[j];
+			}
+			result.push(obj);
 		}
-		result.push(obj);
+		console.log("result", result);
+		result.shift();
 	}
-	console.log("result", result);
-	result.shift();
 	return result;
 }
 
